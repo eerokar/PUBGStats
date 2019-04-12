@@ -101,7 +101,8 @@ app.get('/matchDetails/:id', async (req, res) => {
     let matchBasics = await getMatchBasics(url);
     let telemetryUrl = await matchBasics.telemetryEventsURL;
     let response = await getTelemetryEvents(telemetryUrl, "GYROFIN");
-    res.render('matchDetails',{ stats: response });
+    let strngRes = JSON.stringify(response);
+    res.render('matchDetails',{ statistics: strngRes });
     //res.send(response);
 
 });
