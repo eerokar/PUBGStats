@@ -42,6 +42,7 @@ function connectToUserDatabase() {
 
 //Browser can access these folders
 app.use(express.static('public'));
+app.use('/views', express.static('views'));
 app.use('/upload-images', express.static('upload-images'));
 
 // EJS
@@ -99,8 +100,10 @@ app.get('/matchDetails/:id', async (req, res) => {
     let url = "https://api.pubg.com/shards/eu/matches/" + matchId;
     let matchBasics = await getMatchBasics(url);
     let telemetryUrl = await matchBasics.telemetryEventsURL;
-    let response = await getTelemetryEvents(telemetryUrl);
-    res.send(response);
+    let response = await getTelemetryEvents(telemetryUrl, "GYROFIN");
+    res.render('matchDetails',{ stats: response });
+    //res.send(response);
+
 });
 
 const apiRequestConfig = {
@@ -126,7 +129,6 @@ async function getRecentMatches(url) {
             matchId: recentMatchesArray[i].id,
             matchDetails: await getMatchBasics(matchBasicsURL)};
     }
-    console.log(recentMatchDetails);
     return(recentMatchDetails);
 }
 
@@ -151,13 +153,68 @@ async function getMatchBasics(url) {
     return(matchBasics);
 }
 
-async function getTelemetryEvents(url) {
+async function getTelemetryEvents(url, selectedPlayer) {
 
     const response = await fetch(url, apiRequestConfig);
     const object = await response.json();
 
-    return(object);
+    const allKillsInTheGame = [];
+    const allKnocksInTheGame = [];
+    const allDamagesInTheGame = [];
 
+    const selectedPlayerKills = [];
+    const selectedPlayerKnocks = [];
+    const selectedPlayerDamages = [];
+
+    var selectedPlayerKillsKnocksAndDamages;
+
+    //Get all kills, knocks and damages
+    for(var i in object){
+        //Get all kills in the game
+        if(object[i]._T === "LogPlayerKill"){
+            allKillsInTheGame.push(object[i])
+        }
+        //Get all knocks in the game
+        if(object[i]._T === "LogPlayerMakeGroggy"){
+            allKnocksInTheGame.push(object[i])
+        }
+        //Get all damages dealt in the game
+        if(object[i]._T === "LogPlayerTakeDamage"){
+            allDamagesInTheGame.push(object[i])
+        }
+    }
+
+    //Get kills, knocks and damages of a specific player
+    //Get the kills of a selected player
+    for(var i in allKillsInTheGame){
+        if(allKillsInTheGame[i].killer.name === selectedPlayer){
+            selectedPlayerKills.push(allKillsInTheGame[i]);
+        }
+    }
+    //Get the knocks of a selected player
+    for(var i in allKnocksInTheGame){
+        if (allKnocksInTheGame[i].attacker !== null) {
+            if (allKnocksInTheGame[i].attacker.name === selectedPlayer) {
+                selectedPlayerKnocks.push(allKnocksInTheGame[i]);
+            }
+        }
+    }
+    //Get the damages dealt by a selected player
+    for(var i in allDamagesInTheGame){
+        if (allDamagesInTheGame[i].attacker !== null) {
+            if (allDamagesInTheGame[i].attacker.name === selectedPlayer) {
+                selectedPlayerDamages.push(allDamagesInTheGame[i]);
+            }
+        }
+    }
+
+    //Creates an object of all kills, knocks and damages of a selected player
+    selectedPlayerKillsKnocksAndDamages = {
+        kills: selectedPlayerKills,
+        knocks: selectedPlayerKnocks,
+        damages: selectedPlayerDamages
+    };
+    return(selectedPlayerKillsKnocksAndDamages);
 }
 
 const PORT = process.env.PORT ||  3000;
