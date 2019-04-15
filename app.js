@@ -203,8 +203,10 @@ async function getTelemetryEvents(url, selectedPlayer) {
     //Get the damages dealt by a selected player
     for(var i in allDamagesInTheGame){
         if (allDamagesInTheGame[i].attacker !== null) {
-            if (allDamagesInTheGame[i].attacker.name === selectedPlayer) {
-                selectedPlayerDamages.push(allDamagesInTheGame[i]);
+            if (allDamagesInTheGame[i].victim.name !== selectedPlayer) {
+                if (allDamagesInTheGame[i].attacker.name === selectedPlayer) {
+                    selectedPlayerDamages.push(allDamagesInTheGame[i]);
+                }
             }
         }
     }
