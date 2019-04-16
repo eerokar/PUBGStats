@@ -1,7 +1,7 @@
-var responseText = document.getElementById("data").innerText;
-var data = JSON.parse(responseText);
+const responseText = document.getElementById("data").innerText;
+const data = JSON.parse(responseText);
 
-var DOMobject = document.createElement('div');
+const DOMobject = document.createElement('div');
 DOMobject.id = 'myDiv';
 DOMobject.style.width = 'fit-content';
 DOMobject.style.height = 'fit-content';
@@ -16,9 +16,9 @@ victimStats = {
     damageDone: 0
 };
 
-var killedVictims = [];
-var knockedVictims = [];
-var woundedVictims = [];
+const killedVictims = [];
+const knockedVictims = [];
+const woundedVictims = [];
 
 //Kills
 for (var i in data.kills){
@@ -63,12 +63,12 @@ renderDamageStats(playerWoundedStatistics(woundedVictims));
 
 //Render kills
 function renderKillStats(killedStats) {
-    var killsDiv = document.createElement('div');
+    const killsDiv = document.createElement('div');
     killsDiv.className = "card card-body text-center";
     killsDiv.innerText = 'Kills: '+ killedStats.length+ '\n\n';
 
     for (var i in killedStats) {
-        var killedPlayer = document.createElement('div');
+        const killedPlayer = document.createElement('div');
         killedPlayer.innerText =
             'Player: ' + killedStats[i].name + ' \n' +
             'Killed with: ' + weaponNameConverter(killedStats[i].gunShotWith) + '. \n' +
@@ -80,21 +80,21 @@ function renderKillStats(killedStats) {
 
 //Render knocks
 function renderKnockStats(knockedVics) {
-    var knocksDiv  = document.createElement('div');
+    const knocksDiv  = document.createElement('div');
 
     knocksDiv.className = "card card-body text-center";
     knocksDiv.innerText = 'Knocks: \n\n';
 
     for(var i in knockedVics) {
-        var knockedPlayer = document.createElement('div');
+        const knockedPlayer = document.createElement('div');
         knockedPlayer.className = "card card-body text-left";
-        var thisVictimStats = knockedVics[i];
+        const thisVictimStats = knockedVics[i];
         knockedPlayer.innerText =
             'Player: \n' + thisVictimStats[0].name + ' \n' +
             'knocked: ' + thisVictimStats.length + ' times.\n';
 
             for (var i in thisVictimStats) {
-                var knockStats = document.createElement('div');
+                const knockStats = document.createElement('div');
                 knockStats.innerText =
                     'Knocked with ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + '. Hit area: ' + hitAreaConverter(thisVictimStats[i].areaHit)+ '. \n';
                 knockedPlayer.appendChild(knockStats);
@@ -106,8 +106,8 @@ function renderKnockStats(knockedVics) {
 
 //Render Damages
 function renderDamageStats(woundedVictims) {
-    var damagesDiv = document.createElement('div');
-    var totalDamageInGameDiv = document.createElement('div');
+    const damagesDiv = document.createElement('div');
+    const totalDamageInGameDiv = document.createElement('div');
     damagesDiv.className = "card card-body text-center";
     totalDamageInGameDiv.className = "card card-body text-left";
 
@@ -117,11 +117,11 @@ function renderDamageStats(woundedVictims) {
     var totalDamageToOnePlayer = 0;
 
     for(var i in woundedVictims){
-        var woundedPlayer = document.createElement('div');
-        var totalDamageToPlayerDiv = document.createElement('div');
+        const woundedPlayer = document.createElement('div');
+        const totalDamageToPlayerDiv = document.createElement('div');
         woundedPlayer.className = "card card-body text-center";
         totalDamageToPlayerDiv.className = "card card-body text-left";
-        var thisVictimStats = woundedVictims[i];
+        const thisVictimStats = woundedVictims[i];
         woundedPlayer.innerText =
             'Player: \n' + thisVictimStats[0].name + ' \n' +
             'Hit ' + thisVictimStats.length + ' times.' + ' \n\n' +
@@ -150,10 +150,10 @@ function renderDamageStats(woundedVictims) {
 
 //Knocked statistics
 function playerKnockedStatistics(victims) {
-    var playersKnocked = {};
+    const playersKnocked = {};
 
     for (var i in victims) {
-        var thisVictim = victims[i];
+        const thisVictim = victims[i];
 
         if (playersKnocked.hasOwnProperty(thisVictim.name)) {
             playersKnocked[thisVictim.name].push(thisVictim);
@@ -167,10 +167,10 @@ function playerKnockedStatistics(victims) {
 
 //Wounded statistics
 function playerWoundedStatistics(victims) {
-    var playersWounded = {};
+    const playersWounded = {};
 
     for (var i in victims) {
-        var thisVictim = victims[i];
+        const thisVictim = victims[i];
 
         if (playersWounded.hasOwnProperty(thisVictim.name)) {
             playersWounded[thisVictim.name].push(thisVictim);
@@ -186,7 +186,7 @@ function playerWoundedStatistics(victims) {
 
 //Hit area
 function hitAreaConverter(hitArea) {
-    var convertedHitArea = {
+    const convertedHitArea = {
         "HeadShot": "Head",
         "TorsoShot": "Torso",
         "ArmShot": "Arm",
@@ -200,7 +200,7 @@ function hitAreaConverter(hitArea) {
 
 //Weapon name
 function weaponNameConverter(weapon){
-    var convertedName = {
+    const convertedName = {
         "AquaRail_A_01_C": "Aquarail",
         "AquaRail_A_02_C": "Aquarail",
         "AquaRail_A_03_C": "Aquarail",
