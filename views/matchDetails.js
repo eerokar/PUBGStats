@@ -1,6 +1,12 @@
 var responseText = document.getElementById("data").innerText;
 var data = JSON.parse(responseText);
 
+var DOMobject = document.createElement('div');
+DOMobject.id = 'myDiv';
+DOMobject.style.width = 'fit-content';
+DOMobject.style.height = 'fit-content';
+DOMobject.style.background = 'green';
+
 console.log(data);
 
 victimStats = {
@@ -23,6 +29,7 @@ for (var i in data.kills){
     };
     killedVictims.push(victimStats[i]);
 }
+
 //Knocks
 for (var i in data.knocks){
     victimStats[i] = {
@@ -32,9 +39,6 @@ for (var i in data.knocks){
     };
     knockedVictims.push(victimStats[i]);
 }
-
-console.log('Knocks: ');
-console.log(playerKnockedStatistics(knockedVictims));
 
 //Damages
 for (var i in data.damages){
@@ -48,30 +52,103 @@ for (var i in data.damages){
         woundedVictims.push(victimStats[i]);
     }
 }
-console.log('Damages: ');
-console.log(damageOverview(playerWoundedStatistics(woundedVictims)));
 
-function damageOverview(woundedVictims) {
-    var totalDamage = 0;
-    var totalDamageToOnePlayer = 0;
-    for(var i in woundedVictims){
-        var thisVictimStats = woundedVictims[i];
-        console.log('Player: ' + thisVictimStats[0].name + ' \n' +
-            'Hit ' + thisVictimStats.length + ' times.' + ' \n' +
-            'individual hits: ');
-        for (var i in thisVictimStats){
-            console.log(thisVictimStats[i].areaHit + ' with weapon ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + ' \n' +
-                'doing ' + thisVictimStats[i].damageDone.toFixed(2) + ' points of damage.');
-            totalDamage = totalDamage + thisVictimStats[i].damageDone;
-            totalDamageToOnePlayer = totalDamageToOnePlayer + thisVictimStats[i].damageDone;
-        }
-        console.log('Total damage done to player: ' + totalDamageToOnePlayer.toFixed(2));
-        totalDamageToOnePlayer = 0;
+renderKillStats(killedVictims);
+
+renderKnockStats(playerKnockedStatistics(knockedVictims));
+
+renderDamageStats(playerWoundedStatistics(woundedVictims));
+
+//Functions
+
+//Render kills
+function renderKillStats(killedStats) {
+    var killsDiv = document.createElement('div');
+    killsDiv.className = "card card-body text-center";
+    killsDiv.innerText = 'Kills: '+ killedStats.length+ '\n\n';
+
+    for (var i in killedStats) {
+        var killedPlayer = document.createElement('div');
+        killedPlayer.innerText =
+            'Player: ' + killedStats[i].name + ' \n' +
+            'Killed with: ' + weaponNameConverter(killedStats[i].gunShotWith) + '. \n' +
+            'Hit area: ' + hitAreaConverter(killedStats[i].areaHit)+ '. \n\n';
+        killsDiv.appendChild(killedPlayer);
     }
-    console.log('Total damage done: ' + totalDamage.toFixed(2));
+    document.body.appendChild(killsDiv);
 }
 
+//Render knocks
+function renderKnockStats(knockedVics) {
+    var knocksDiv  = document.createElement('div');
 
+    knocksDiv.className = "card card-body text-center";
+    knocksDiv.innerText = 'Knocks: \n\n';
+
+    for(var i in knockedVics) {
+        var knockedPlayer = document.createElement('div');
+        knockedPlayer.className = "card card-body text-left";
+        var thisVictimStats = knockedVics[i];
+        knockedPlayer.innerText =
+            'Player: \n' + thisVictimStats[0].name + ' \n' +
+            'knocked: ' + thisVictimStats.length + ' times.\n';
+
+            for (var i in thisVictimStats) {
+                var knockStats = document.createElement('div');
+                knockStats.innerText =
+                    'Knocked with ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + '. Hit area: ' + hitAreaConverter(thisVictimStats[i].areaHit)+ '. \n';
+                knockedPlayer.appendChild(knockStats);
+        }
+        knocksDiv.appendChild(knockedPlayer);
+    }
+    document.body.appendChild(knocksDiv);
+}
+
+//Render Damages
+function renderDamageStats(woundedVictims) {
+    var damagesDiv = document.createElement('div');
+    var totalDamageInGameDiv = document.createElement('div');
+    damagesDiv.className = "card card-body text-center";
+    totalDamageInGameDiv.className = "card card-body text-left";
+
+    damagesDiv.innerText = "Damages: \n\n";
+
+    var totalDamage = 0;
+    var totalDamageToOnePlayer = 0;
+
+    for(var i in woundedVictims){
+        var woundedPlayer = document.createElement('div');
+        var totalDamageToPlayerDiv = document.createElement('div');
+        woundedPlayer.className = "card card-body text-center";
+        totalDamageToPlayerDiv.className = "card card-body text-left";
+        var thisVictimStats = woundedVictims[i];
+        woundedPlayer.innerText =
+            'Player: \n' + thisVictimStats[0].name + ' \n' +
+            'Hit ' + thisVictimStats.length + ' times.' + ' \n\n' +
+            'individual hits: ';
+            for (var i in thisVictimStats){
+                var individualHitsDiv = document.createElement('div');
+                individualHitsDiv.className = "card card-body text-left";
+                individualHitsDiv.innerText =
+                    'Weapon: ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + ' \n' +
+                    'Area: ' + hitAreaConverter(thisVictimStats[i].areaHit) + '\n' +
+                    'Damage: ' + thisVictimStats[i].damageDone.toFixed(2) + ' points. \n\n';
+                totalDamage = totalDamage + thisVictimStats[i].damageDone;
+                totalDamageToOnePlayer = totalDamageToOnePlayer + thisVictimStats[i].damageDone;
+                totalDamageToPlayerDiv.innerText = 'Total damage done to player: ' + totalDamageToOnePlayer.toFixed(2);
+                woundedPlayer.appendChild(individualHitsDiv);
+                woundedPlayer.appendChild(totalDamageToPlayerDiv);
+             }
+            damagesDiv.appendChild(woundedPlayer);
+        totalDamageToOnePlayer = 0;
+    }
+    totalDamageInGameDiv.innerText = 'Total damage done in the game: ' + totalDamage.toFixed(2);
+    damagesDiv.appendChild(totalDamageInGameDiv);
+    document.body.appendChild(damagesDiv);
+
+}
+
+//Knocked statistics
 function playerKnockedStatistics(victims) {
     var playersKnocked = {};
 
@@ -88,6 +165,7 @@ function playerKnockedStatistics(victims) {
     return(playersKnocked);
 }
 
+//Wounded statistics
 function playerWoundedStatistics(victims) {
     var playersWounded = {};
 
@@ -102,8 +180,25 @@ function playerWoundedStatistics(victims) {
         }
     }
     return(playersWounded);
-};
+}
 
+//Converters
+
+//Hit area
+function hitAreaConverter(hitArea) {
+    var convertedHitArea = {
+        "HeadShot": "Head",
+        "TorsoShot": "Torso",
+        "ArmShot": "Arm",
+        "LegShot": "Leg",
+        "PelvisShot": "Pelvis",
+        "NonSpecific": "Whole body",
+        "None": "Bleed out"
+    };
+    return convertedHitArea[hitArea];
+}
+
+//Weapon name
 function weaponNameConverter(weapon){
     var convertedName = {
         "AquaRail_A_01_C": "Aquarail",
@@ -168,8 +263,8 @@ function weaponNameConverter(weapon){
         "Dacia_A_04_v2_C": "Dacia",
         "None": "None",
         "PG117_A_01_C": "PG-117",
-        "PlayerFemale_A_C": "Player",
-        "PlayerMale_A_C": "Player",
+        "PlayerFemale_A_C": "-",
+        "PlayerMale_A_C": "-",
         "ProjGrenade_C": "Frag Grenade",
         "ProjMolotov_C": "Molotov Cocktail",
         "ProjMolotov_DamageField_Direct_C": "Molotov Cocktail Fire Field",
