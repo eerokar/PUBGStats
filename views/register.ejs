@@ -9,24 +9,24 @@
                 <div class="form-group">
                     <label for="name">Name</label>
                     <input
-                            type="name"
+                            type="text"
                             id="name"
                             name="name"
                             class="form-control"
-                            placeholder="Enter Name"
-                            value="<%= typeof name != 'undefined' ? name : '' %>"
+                            placeholder="Enter name"
                     />
                 </div>
                 <div class="form-group">
-                    <label for="email">Email</label>
+                    <label for="pubgname">PUBG player name</label>
                     <input
-                            type="email"
-                            id="email"
-                            name="email"
+                            type="text"
+                            id="pubgname"
+                            name="pubgname"
                             class="form-control"
-                            placeholder="Enter Email"
-                            value="<%= typeof email != 'undefined' ? email : '' %>"
+                            placeholder="Enter PUBG player name (case sensitive)"
+                            value="<%= typeof pubgname != 'undefined' ? pubgname : '' %>"
                     />
+
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>

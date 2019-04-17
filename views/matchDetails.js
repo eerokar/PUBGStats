@@ -64,15 +64,17 @@ renderDamageStats(playerWoundedStatistics(woundedVictims));
 //Render kills
 function renderKillStats(killedStats) {
     const killsDiv = document.createElement('div');
-    killsDiv.className = "card card-body text-center";
-    killsDiv.innerText = 'Kills: '+ killedStats.length+ '\n\n';
+
+    killsDiv.setAttribute('class', 'statsBackground');
+    killsDiv.innerText = 'Kills: '+ killedStats.length + '\n\n';
 
     for (var i in killedStats) {
         const killedPlayer = document.createElement('div');
+        killedPlayer.className = "card card-body text-left";
         killedPlayer.innerText =
             'Player: ' + killedStats[i].name + ' \n' +
             'Killed with: ' + weaponNameConverter(killedStats[i].gunShotWith) + '. \n' +
-            'Hit area: ' + hitAreaConverter(killedStats[i].areaHit)+ '. \n\n';
+            'Hit area: ' + hitAreaConverter(killedStats[i].areaHit)+ '. \n';
         killsDiv.appendChild(killedPlayer);
     }
     document.body.appendChild(killsDiv);
@@ -82,21 +84,23 @@ function renderKillStats(killedStats) {
 function renderKnockStats(knockedVics) {
     const knocksDiv  = document.createElement('div');
 
-    knocksDiv.className = "card card-body text-center";
-    knocksDiv.innerText = 'Knocks: \n\n';
+    knocksDiv.setAttribute('class', 'statsBackground');
+    console.log(knockedVics);
+    knocksDiv.innerText = 'Knocks: ' + objectSize(knockedVics) + '\n\n';
 
     for(var i in knockedVics) {
         const knockedPlayer = document.createElement('div');
         knockedPlayer.className = "card card-body text-left";
         const thisVictimStats = knockedVics[i];
         knockedPlayer.innerText =
-            'Player: \n' + thisVictimStats[0].name + ' \n' +
+            'Player: ' + thisVictimStats[0].name + ' \n' +
             'knocked: ' + thisVictimStats.length + ' times.\n';
 
             for (var i in thisVictimStats) {
                 const knockStats = document.createElement('div');
                 knockStats.innerText =
-                    'Knocked with ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + '. Hit area: ' + hitAreaConverter(thisVictimStats[i].areaHit)+ '. \n';
+                    'Knocked with ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + '. \n' +
+                    'Hit area: ' + hitAreaConverter(thisVictimStats[i].areaHit)+ '. \n';
                 knockedPlayer.appendChild(knockStats);
         }
         knocksDiv.appendChild(knockedPlayer);
@@ -108,8 +112,9 @@ function renderKnockStats(knockedVics) {
 function renderDamageStats(woundedVictims) {
     const damagesDiv = document.createElement('div');
     const totalDamageInGameDiv = document.createElement('div');
-    damagesDiv.className = "card card-body text-center";
-    totalDamageInGameDiv.className = "card card-body text-left";
+
+    damagesDiv.setAttribute('class', 'statsBackground');
+    totalDamageInGameDiv.className = "card card-body4 text-left";
 
     damagesDiv.innerText = "Damages: \n\n";
 
@@ -119,30 +124,35 @@ function renderDamageStats(woundedVictims) {
     for(var i in woundedVictims){
         const woundedPlayer = document.createElement('div');
         const totalDamageToPlayerDiv = document.createElement('div');
-        woundedPlayer.className = "card card-body text-center";
-        totalDamageToPlayerDiv.className = "card card-body text-left";
+
+        woundedPlayer.className = "card card-body text-left";
+        totalDamageToPlayerDiv.className = "card card-body3 text-left";
+
         const thisVictimStats = woundedVictims[i];
+
         woundedPlayer.innerText =
-            'Player: \n' + thisVictimStats[0].name + ' \n' +
-            'Hit ' + thisVictimStats.length + ' times.' + ' \n\n' +
+            'Player: ' + thisVictimStats[0].name + ' \n' +
+            'Times hit: ' + thisVictimStats.length + ' \n\n' +
             'individual hits: ';
+
             for (var i in thisVictimStats){
                 var individualHitsDiv = document.createElement('div');
-                individualHitsDiv.className = "card card-body text-left";
+                individualHitsDiv.className = "card card-body2 text-left";
                 individualHitsDiv.innerText =
                     'Weapon: ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + ' \n' +
                     'Area: ' + hitAreaConverter(thisVictimStats[i].areaHit) + '\n' +
                     'Damage: ' + thisVictimStats[i].damageDone.toFixed(2) + ' points. \n\n';
                 totalDamage = totalDamage + thisVictimStats[i].damageDone;
                 totalDamageToOnePlayer = totalDamageToOnePlayer + thisVictimStats[i].damageDone;
-                totalDamageToPlayerDiv.innerText = 'Total damage done to player: ' + totalDamageToOnePlayer.toFixed(2);
+                totalDamageToPlayerDiv.innerText = 'Total damage done to player: ' + totalDamageToOnePlayer.toFixed(2)+ ' points.';
+
                 woundedPlayer.appendChild(individualHitsDiv);
                 woundedPlayer.appendChild(totalDamageToPlayerDiv);
              }
             damagesDiv.appendChild(woundedPlayer);
         totalDamageToOnePlayer = 0;
     }
-    totalDamageInGameDiv.innerText = 'Total damage done in the game: ' + totalDamage.toFixed(2);
+    totalDamageInGameDiv.innerText = 'Total damage done in the game: ' + totalDamage.toFixed(2) + ' points.';
     damagesDiv.appendChild(totalDamageInGameDiv);
     document.body.appendChild(damagesDiv);
 
@@ -180,6 +190,15 @@ function playerWoundedStatistics(victims) {
         }
     }
     return(playersWounded);
+}
+
+//Calculates the size of an object
+function objectSize(obj) {
+    var size = 0, key;
+    for (key in obj) {
+        if (obj.hasOwnProperty(key)) size++;
+    }
+    return size;
 }
 
 //Converters
@@ -263,8 +282,8 @@ function weaponNameConverter(weapon){
         "Dacia_A_04_v2_C": "Dacia",
         "None": "None",
         "PG117_A_01_C": "PG-117",
-        "PlayerFemale_A_C": "-",
-        "PlayerMale_A_C": "-",
+        "PlayerFemale_A_C": " - ",
+        "PlayerMale_A_C": " - ",
         "ProjGrenade_C": "Frag Grenade",
         "ProjMolotov_C": "Molotov Cocktail",
         "ProjMolotov_DamageField_Direct_C": "Molotov Cocktail Fire Field",

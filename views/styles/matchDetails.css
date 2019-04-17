@@ -1,0 +1,18 @@
+.buttonContainer {
+    width:fit-content;
+    height:fit-content;
+    margin: auto;
+    padding: 10px;
+}
+
+.statsBackground {
+    box-sizing: border-box;
+    width: 50%;
+    margin: auto;
+    padding: 20px 60px;
+    background: #303030;
+}
+
+.card {
+    padding: 10px;
+}

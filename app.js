@@ -95,12 +95,13 @@ app.get('/matchBasics/:id', async (req, res) => {
     res.send(response);
 });
 
-app.get('/matchDetails/:id', async (req, res) => {
+app.get('/matchDetails/:id/:pubgName', async (req, res) => {
     let matchId = req.params.id;
+    let pubgName = req.params.pubgName;
     let url = "https://api.pubg.com/shards/eu/matches/" + matchId;
     let matchBasics = await getMatchBasics(url);
     let telemetryUrl = await matchBasics.telemetryEventsURL;
-    let response = await getTelemetryEvents(telemetryUrl, "GYROFIN");
+    let response = await getTelemetryEvents(telemetryUrl, pubgName);
     let strngRes = JSON.stringify(response);
     res.render('matchDetails',{ statistics: strngRes });
     //res.send(response);
