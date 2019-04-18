@@ -43,7 +43,7 @@ function connectToUserDatabase() {
 //Browser can access these folders
 app.use(express.static('public'));
 app.use('/views', express.static('views'));
-app.use('/upload-images', express.static('upload-images'));
+app.use('/image-assets', express.static('image-assets'));
 
 // EJS
 app.use(expressLayouts);
@@ -104,8 +104,6 @@ app.get('/matchDetails/:id/:pubgName', async (req, res) => {
     let response = await getTelemetryEvents(telemetryUrl, pubgName);
     let strngRes = JSON.stringify(response);
     res.render('matchDetails',{ statistics: strngRes });
-    //res.send(response);
-
 });
 
 const apiRequestConfig = {
@@ -117,13 +115,12 @@ const apiRequestConfig = {
 
 // Gets recent played matches
 async function getRecentMatches(url) {
-    var recentMatchDetails = {};
+    const recentMatchDetails = {};
 
     const response = await fetch(url, apiRequestConfig);
     const object = await response.json();
 
     let recentMatchesArray = await object.data[0].relationships.matches.data;
-
 
     for(var i in recentMatchesArray){
         let matchBasicsURL = "https://api.pubg.com/shards/eu/matches/" + recentMatchesArray[i].id;

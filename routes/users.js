@@ -100,4 +100,6 @@ router.get('/logout', (req,res) => {
     res.redirect('/users/login');
 });
 
+//Liikaa html (Korjaa) (AJAX)
+
 module.exports = router;

@@ -73,8 +73,8 @@ function renderKillStats(killedStats) {
         killedPlayer.className = "card card-body text-left";
         killedPlayer.innerText =
             'Player: ' + killedStats[i].name + ' \n' +
-            'Killed with: ' + weaponNameConverter(killedStats[i].gunShotWith) + '. \n' +
-            'Hit area: ' + hitAreaConverter(killedStats[i].areaHit)+ '. \n';
+            'Killed with: ' + weaponNameConverter(killedStats[i].gunShotWith) + ' \n' +
+            'Hit area: ' + hitAreaConverter(killedStats[i].areaHit)+ ' \n';
         killsDiv.appendChild(killedPlayer);
     }
     document.body.appendChild(killsDiv);
@@ -94,12 +94,12 @@ function renderKnockStats(knockedVics) {
         const thisVictimStats = knockedVics[i];
         knockedPlayer.innerText =
             'Player: ' + thisVictimStats[0].name + ' \n' +
-            'knocked: ' + thisVictimStats.length + ' times.\n';
+            'knocked: ' + thisVictimStats.length + ' times\n';
 
             for (var i in thisVictimStats) {
                 const knockStats = document.createElement('div');
                 knockStats.innerText =
-                    'Knocked with ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + '. \n' +
+                    'Knocked with ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + ' \n' +
                     'Hit area: ' + hitAreaConverter(thisVictimStats[i].areaHit)+ '. \n';
                 knockedPlayer.appendChild(knockStats);
         }
@@ -141,10 +141,10 @@ function renderDamageStats(woundedVictims) {
                 individualHitsDiv.innerText =
                     'Weapon: ' + weaponNameConverter(thisVictimStats[i].gunShotWith) + ' \n' +
                     'Area: ' + hitAreaConverter(thisVictimStats[i].areaHit) + '\n' +
-                    'Damage: ' + thisVictimStats[i].damageDone.toFixed(2) + ' points. \n\n';
+                    'Damage: ' + thisVictimStats[i].damageDone.toFixed(2) + ' points \n\n';
                 totalDamage = totalDamage + thisVictimStats[i].damageDone;
                 totalDamageToOnePlayer = totalDamageToOnePlayer + thisVictimStats[i].damageDone;
-                totalDamageToPlayerDiv.innerText = 'Total damage done to player: ' + totalDamageToOnePlayer.toFixed(2)+ ' points.';
+                totalDamageToPlayerDiv.innerText = 'Total damage done to player: ' + totalDamageToOnePlayer.toFixed(2)+ ' points';
 
                 woundedPlayer.appendChild(individualHitsDiv);
                 woundedPlayer.appendChild(totalDamageToPlayerDiv);
@@ -152,7 +152,7 @@ function renderDamageStats(woundedVictims) {
             damagesDiv.appendChild(woundedPlayer);
         totalDamageToOnePlayer = 0;
     }
-    totalDamageInGameDiv.innerText = 'Total damage done in the game: ' + totalDamage.toFixed(2) + ' points.';
+    totalDamageInGameDiv.innerText = 'Total damage done in the game: ' + totalDamage.toFixed(2) + ' points';
     damagesDiv.appendChild(totalDamageInGameDiv);
     document.body.appendChild(damagesDiv);
 
@@ -327,7 +327,7 @@ function weaponNameConverter(weapon){
         "WeapSickle_C": "Sickle",
         "WeapSKS_C": "SKS",
         "WeapThompson_C": "Tommy Gun",
-        "WeapUMP_C": "UMP9",
+        "WeapUMP_C": "UMP45",
         "WeapUZI_C": "Micro Uzi",
         "WeapVector_C": "Vector",
         "WeapVSS_C": "VSS",

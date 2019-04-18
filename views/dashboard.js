@@ -9,36 +9,63 @@ request.open('GET', url + '/playerName/' + pubgName, true);
 request.onload = function() {
     if (request.status >= 200 && request.status < 400){
         // Success!
+
         data = JSON.parse(request.responseText);
         for(var i in data) {
             //Create button
             var match = document.createElement("div");
             var matchimage = document.createElement("img");
             var mapNameText = document.createElement('div');
+            var mapDetailsText = document.createElement('div');
             match.setAttribute('matchId', data[i].matchId);
             match.setAttribute('class', 'matchesImageDiv');
-            mapNameText.setAttribute('class', 'matchName');
+            mapNameText.setAttribute('class', 'matchNameText');
+            mapDetailsText.setAttribute('class', 'matchDetailsText')
 
             //Change button text according to the map's name
+            console.log(data[i]);
             if(data[i].matchDetails.mapName === 'Erangel_Main'){
-                matchimage.src = './upload-images/erangel.png';
+                matchimage.src = './image-assets/erangel.png';
                 mapNameText.innerText = 'Erangel';
             }
             if(data[i].matchDetails.mapName === 'Desert_Main'){
-                matchimage.src = './upload-images/miramar.png';
+                matchimage.src = './image-assets/miramar.png';
                 mapNameText.innerText = 'Miramar';
             }
             if(data[i].matchDetails.mapName === 'Savage_Main'){
-                matchimage.src = './upload-images/sanhok.png';
+                matchimage.src = './image-assets/sanhok.png';
                 mapNameText.innerText = 'Sanhok';
             }
             if(data[i].matchDetails.mapName === 'DihorOtok_Main'){
-                matchimage.src = './upload-images/vikendi.png';
+                matchimage.src = './image-assets/vikendi.png';
                 mapNameText.innerText = 'Vikendi';
+            }
+
+            //Change game mode text
+            if(data[i].matchDetails.gameMode === 'solo-fpp') {
+                mapDetailsText.innerText = 'Solo FPP';
+            }
+            else if(data[i].matchDetails.gameMode === 'solo-tpp') {
+                mapDetailsText.innerText = 'Solo TPP';
+            }
+            else if(data[i].matchDetails.gameMode === 'duo-fpp') {
+                mapDetailsText.innerText = 'Duo FPP';
+            }
+            else if(data[i].matchDetails.gameMode === 'duo-tpp') {
+                mapDetailsText.innerText = 'Duo TPP';
+            }
+            else if(data[i].matchDetails.gameMode === 'squad-fpp') {
+                mapDetailsText.innerText = 'Squad FPP';
+            }
+            else if(data[i].matchDetails.gameMode === 'squad-tpp') {
+                mapDetailsText.innerText = 'Squad TPP';
+            } else {
+                mapDetailsText.innerText = 'Custom';
             }
             match.onclick = onClick;
             match.appendChild(matchimage);
             match.appendChild(mapNameText);
+            match.appendChild(mapDetailsText);
             document.body.appendChild(match);
         }
 
