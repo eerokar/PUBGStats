@@ -20,7 +20,13 @@ request.onload = function() {
             match.setAttribute('matchId', data[i].matchId);
             match.setAttribute('class', 'matchesImageDiv');
             mapNameText.setAttribute('class', 'matchNameText');
-            mapDetailsText.setAttribute('class', 'matchDetailsText')
+            mapDetailsText.setAttribute('class', 'matchDetailsText');
+
+            match.addEventListener("click", function(){
+                request.open('GET', url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName, true);
+                request.send();
+                window.location.replace(url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName);
+            });
 
             //Change button text according to the map's name
             console.log(data[i]);
@@ -62,11 +68,16 @@ request.onload = function() {
             } else {
                 mapDetailsText.innerText = 'Custom';
             }
-            match.onclick = onClick;
+            //match.onclick = onClick;
             match.appendChild(matchimage);
             match.appendChild(mapNameText);
             match.appendChild(mapDetailsText);
+
+
+
             document.body.appendChild(match);
+
+
         }
 
 //------Erroreita----//
@@ -80,12 +91,4 @@ request.onerror = function() {
 };
 //-----------//
 request.send();
-
-function onClick(e) {
-    var matchId = e.path[1].attributes[0].value;
-    request.open('GET', url + '/matchDetails/' + matchId + '/' + pubgName, true);
-    request.send();
-    window.location.replace(url + '/matchDetails/' + matchId + '/' + pubgName);
-}
-
 
