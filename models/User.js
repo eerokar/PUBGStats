@@ -16,7 +16,8 @@ const UserSchema = new mongoose.Schema({
     date: {
         type: Date,
         default: Date.now()
-    }
+    },
+    favouriteMatches: []
 });
 
 const User = mongoose.model('User',UserSchema);

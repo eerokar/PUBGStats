@@ -1,0 +1,28 @@
+<div class="row mt-5">
+    <div class="col-md-6 m-auto">
+        <div class="card card-body">
+            <h1 class="text-center mb-3">
+                Change your PUBG-name
+            </h1>
+            <p id="name"style="display:none"><%= name %></p>
+            <p id="pubgname"style="display:none"><%= pubgname %></p>
+            <%include ./partials/messages %>
+            <form action="/users/editProfile/<%= name %>/<%= pubgname %>" method="POST">
+                <div class="form-group">
+                    <label for="pubgname">PUBG player name</label>
+                    <input
+                            type="text"
+                            id="pubgname"
+                            name="pubgname"
+                            class="form-control"
+                            placeholder="Change PUBG player name (case sensitive)"
+                            value="<%= typeof pubgname != 'undefined' ? pubgname : '' %>"
+                    />
+                </div>
+                <button type="submit" class="btn btn-primary btn-block">
+                    Commit changes
+                </button>
+            </form>
+        </div>
+    </div>
+</div>

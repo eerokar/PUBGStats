@@ -12,6 +12,12 @@ router.get('/login', (req, res) => res.render('login'));
 //Register Page
 router.get('/register', (req, res) => res.render('register'));
 
+//Edit Profile Page
+router.get('/editProfile/:originalname/:originalpubgname', (req, res) => res.render('editProfile', {
+    name: req.user.name,
+    pubgname: req.user.pubgname
+}));
+
 // Register Handle
 router.post('/register', (req, res) => {
     const {name: name, pubgname: pubgname, password, password2} = req.body;
@@ -49,7 +55,7 @@ router.post('/register', (req, res) => {
             .then(user => {
             if(user){
                 // User exists
-                errors.push({msg: 'Email is already registered'})
+                errors.push({msg: 'That name is already registered'})
                 res.render('register', {
                     errors,
                     name: name,
@@ -82,6 +88,38 @@ router.post('/register', (req, res) => {
             }
         });
     }
+});
+
+// Edit Profile Handle
+router.post('/editProfile/:originalname/:originalpubgname', (req, res) => {
+    let name = req.params.originalname;
+    let originalPubgName = req.params.originalpubgname;
+    const {pubgname: pubgname} = req.body;
+    let userToUpdate = User.findOne({name: name});
+
+
+            userToUpdate.findOneAndUpdate({pubgname: originalPubgName}, {pubgname: pubgname})
+                .then(function () {
+                    res.redirect('/dashboard');
+                })
+                .catch(err => console.log('Vituiks män: ' + err));
+});
+
+router.post('/saveFav', (req,res,next) =>{
+    //console.log(req.body.userName);
+    let name = req.body.userName;
+    let match = req.body.match;
+    let userToUpdate = User.findOne({name: name});
+
+    //User.update({ name: name },{$push: {favouriteMatches: match}})
+    userToUpdate.update({$push: {favouriteMatches: match}})
+        .then(function () {
+
+            req.flash('success_msg', 'This match was added to favourites');
+        })
+        .catch(err => console.log('Vituiks män: ' + err));
+
+    console.log(userToUpdate.find({}));
 });
 
 // Login handle

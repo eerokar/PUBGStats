@@ -1,35 +1,33 @@
-var data = JSON;
+const userName = document.getElementById("name").innerText;
 const pubgName = document.getElementById("pubgname").innerText;
-
 const url = 'https://localhost:3000';
 
-// Vastaanotetaan JSON ja haetaan kuvat näkyville
+// Getting hte JSON of recent matches
 request = new XMLHttpRequest;
 request.open('GET', url + '/playerName/' + pubgName, true);
 request.onload = function() {
     if (request.status >= 200 && request.status < 400){
         // Success!
 
-        data = JSON.parse(request.responseText);
+        const data = JSON.parse(request.responseText);
         for(var i in data) {
             //Create button
-            var match = document.createElement("div");
-            var matchimage = document.createElement("img");
-            var mapNameText = document.createElement('div');
-            var mapDetailsText = document.createElement('div');
+            const match = document.createElement("div");
+            const matchimage = document.createElement("img");
+            const mapNameText = document.createElement('div');
+            const mapDetailsText = document.createElement('div');
             match.setAttribute('matchId', data[i].matchId);
             match.setAttribute('class', 'matchesImageDiv');
             mapNameText.setAttribute('class', 'matchNameText');
             mapDetailsText.setAttribute('class', 'matchDetailsText');
 
             match.addEventListener("click", function(){
-                request.open('GET', url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName, true);
+                request.open('GET', url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName, true);
                 request.send();
-                window.location.replace(url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName);
+                window.location.href = url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName;
             });
 
             //Change button text according to the map's name
-            console.log(data[i]);
             if(data[i].matchDetails.mapName === 'Erangel_Main'){
                 matchimage.src = './image-assets/erangel.png';
                 mapNameText.innerText = 'Erangel';
@@ -73,11 +71,7 @@ request.onload = function() {
             match.appendChild(mapNameText);
             match.appendChild(mapDetailsText);
 
-
-
             document.body.appendChild(match);
-
-
         }
 
 //------Erroreita----//

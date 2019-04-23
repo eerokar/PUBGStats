@@ -8,7 +8,8 @@ router.get('/', (req, res) => res.render('welcome'));
 // Dashboard
 router.get('/dashboard', ensureAuthenticated, (req, res) =>
     res.render('dashboard', {
-        pubgname: req.user.pubgname
+            name: req.user.name,
+            pubgname: req.user.pubgname
 }));
 
 module.exports = router;

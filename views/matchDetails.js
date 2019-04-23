@@ -1,13 +1,29 @@
 const responseText = document.getElementById("data").innerText;
+const userName = document.getElementById("userName").innerText;
 const data = JSON.parse(responseText);
+const url = 'https://localhost:3000';
+
+saveObject = {
+    userName: userName,
+    match: responseText
+};
+
+const saveToFavsBtn = document.getElementById('saveToFavsBtn');
+
+//Save this match to favourites
+saveToFavsBtn.addEventListener("click", function(){
+    console.log('SAVENAPPI');
+    const request = new XMLHttpRequest;
+    request.open('POST', url + '/users/saveFav', true);
+    request.setRequestHeader('Content-Type', 'application/json');
+    request.send(JSON.stringify(saveObject));
+});
 
 const DOMobject = document.createElement('div');
 DOMobject.id = 'myDiv';
 DOMobject.style.width = 'fit-content';
 DOMobject.style.height = 'fit-content';
 DOMobject.style.background = 'green';
-
-console.log(data);
 
 victimStats = {
     name: '',
@@ -85,7 +101,6 @@ function renderKnockStats(knockedVics) {
     const knocksDiv  = document.createElement('div');
 
     knocksDiv.setAttribute('class', 'statsBackground');
-    console.log(knockedVics);
     knocksDiv.innerText = 'Knocks: ' + objectSize(knockedVics) + '\n\n';
 
     for(var i in knockedVics) {

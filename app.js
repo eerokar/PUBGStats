@@ -4,6 +4,7 @@ const mongoose = require('mongoose');
 const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require("passport");
+const bodyParser = require('body-parser');
 
 const https = require('https');
 const fs = require('fs');
@@ -12,6 +13,8 @@ const fetch = require("node-fetch");
 
 const sslkey = fs.readFileSync('ssl-key.pem');
 const sslcert = fs.readFileSync('ssl-cert.pem');
+
+const url = 'https://localhost:';
 
 const options = {
     key: sslkey,
@@ -50,7 +53,11 @@ app.use(expressLayouts);
 app.set('view engine', 'ejs');
 
 // Body Parser
-app.use(express.urlencoded({extended: false}));
+app.use(express.urlencoded({extended: true}));
+
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
 
 // Express session
 app.use(session({
@@ -73,10 +80,11 @@ app.use((req, res, next) => {
     res.locals.error = req.flash('error');
     next();
 });
-
 // Routes
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
+
+const PORT = process.env.PORT ||  3000;
 
 //____________________PUBG___________________________________
 
@@ -95,15 +103,17 @@ app.get('/matchBasics/:id', async (req, res) => {
     res.send(response);
 });
 
-app.get('/matchDetails/:id/:pubgName', async (req, res) => {
+app.get('/matchDetails/:id/:pubgName/:userName', async (req, res) => {
     let matchId = req.params.id;
     let pubgName = req.params.pubgName;
+    let userName = req.params.userName;
     let url = "https://api.pubg.com/shards/eu/matches/" + matchId;
     let matchBasics = await getMatchBasics(url);
     let telemetryUrl = await matchBasics.telemetryEventsURL;
     let response = await getTelemetryEvents(telemetryUrl, pubgName);
     let strngRes = JSON.stringify(response);
-    res.render('matchDetails',{ statistics: strngRes });
+    console.log(req.body);
+    res.render('matchDetails',{ statistics: strngRes, userName: userName});
 });
 
 const apiRequestConfig = {
@@ -218,7 +228,6 @@ async function getTelemetryEvents(url, selectedPlayer) {
     return(selectedPlayerKillsKnocksAndDamages);
 }
 
-const PORT = process.env.PORT ||  3000;
 https.createServer(options, app).listen(PORT);
 
 
