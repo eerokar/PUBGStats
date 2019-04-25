@@ -96,6 +96,12 @@ app.get('/playerName/:id', async (req, res) => {
     res.send(response);
 });
 
+app.get('/favouriteMatches/:id', async (req, res) => {
+    let favMatches = JSON.parse(req.params.id);
+    let response = await getFavMatchBasics(favMatches);
+    res.send(response);
+});
+
 app.get('/matchBasics/:id', async (req, res) => {
     let matchId = req.params.id;
     let url = "https://api.pubg.com/shards/eu/matches/" + matchId;
@@ -112,8 +118,7 @@ app.get('/matchDetails/:id/:pubgName/:userName', async (req, res) => {
     let telemetryUrl = await matchBasics.telemetryEventsURL;
     let response = await getTelemetryEvents(telemetryUrl, pubgName);
     let strngRes = JSON.stringify(response);
-    console.log(req.body);
-    res.render('matchDetails',{ statistics: strngRes, userName: userName});
+    res.render('matchDetails',{ statistics: strngRes, userName: userName, matchId: matchId });
 });
 
 const apiRequestConfig = {
@@ -139,6 +144,17 @@ async function getRecentMatches(url) {
             matchDetails: await getMatchBasics(matchBasicsURL)};
     }
     return(recentMatchDetails);
+}
+
+async function getFavMatchBasics(matchIds){
+    const favouriteMatchDetails = {};
+    for(var i in matchIds){
+        let matchBasicsURL = "https://api.pubg.com/shards/eu/matches/" + matchIds[i];
+        favouriteMatchDetails[i] = {
+            matchId: matchIds[i],
+            matchDetails: await getMatchBasics(matchBasicsURL)};
+    }
+    return(favouriteMatchDetails);
 }
 
 // Gets basic information about each match

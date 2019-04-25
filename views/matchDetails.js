@@ -1,10 +1,12 @@
 const responseText = document.getElementById("data").innerText;
 const userName = document.getElementById("userName").innerText;
+const matchId = document.getElementById("matchId").innerText;
 const data = JSON.parse(responseText);
 const url = 'https://localhost:3000';
 
 saveObject = {
     userName: userName,
+    matchId: matchId,
     match: responseText
 };
 
@@ -12,7 +14,6 @@ const saveToFavsBtn = document.getElementById('saveToFavsBtn');
 
 //Save this match to favourites
 saveToFavsBtn.addEventListener("click", function(){
-    console.log('SAVENAPPI');
     const request = new XMLHttpRequest;
     request.open('POST', url + '/users/saveFav', true);
     request.setRequestHeader('Content-Type', 'application/json');

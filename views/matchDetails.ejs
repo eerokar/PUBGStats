@@ -2,11 +2,14 @@
 <link rel="stylesheet" type="text/css" href="/views/styles/matchDetails.css">
 <p id="data"style="display:none"><%= statistics %></p>
 <p id="userName"style="display:none"><%= userName %></p>
+<p id="matchId"style="display:none"><%= matchId %></p>
 <div class="buttonContainer">
 <a class="btn btn-secondary" id="saveToFavsBtn">Save to favourites</a>
 </div>
 <body>
-
+<h1 class="text-center mb-3">
+<%include ./partials/messages %>
+</h1>
 <div class="matches">
     <script src="/views/matchDetails.js"></script>
 </div>

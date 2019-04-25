@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const passport = require('passport');
+const { ensureAuthenticated } = require('../config/auth');
 
 // User model
 const User = require('../models/User');
@@ -13,7 +14,7 @@ router.get('/login', (req, res) => res.render('login'));
 router.get('/register', (req, res) => res.render('register'));
 
 //Edit Profile Page
-router.get('/editProfile/:originalname/:originalpubgname', (req, res) => res.render('editProfile', {
+router.get('/editProfile/:originalname/:originalpubgname',ensureAuthenticated, (req, res) => res.render('editProfile', {
     name: req.user.name,
     pubgname: req.user.pubgname
 }));
@@ -55,7 +56,7 @@ router.post('/register', (req, res) => {
             .then(user => {
             if(user){
                 // User exists
-                errors.push({msg: 'That name is already registered'})
+                errors.push({msg: 'That name is already registered'});
                 res.render('register', {
                     errors,
                     name: name,
@@ -91,37 +92,95 @@ router.post('/register', (req, res) => {
 });
 
 // Edit Profile Handle
-router.post('/editProfile/:originalname/:originalpubgname', (req, res) => {
+router.post('/editProfile/:originalname/:originalpubgname',ensureAuthenticated, (req, res) => {
     let name = req.params.originalname;
     let originalPubgName = req.params.originalpubgname;
     const {pubgname: pubgname} = req.body;
     let userToUpdate = User.findOne({name: name});
 
-
-            userToUpdate.findOneAndUpdate({pubgname: originalPubgName}, {pubgname: pubgname})
-                .then(function () {
-                    res.redirect('/dashboard');
-                })
-                .catch(err => console.log('Vituiks män: ' + err));
+    userToUpdate.findOneAndUpdate({pubgname: originalPubgName}, {pubgname: pubgname})
+        .then(function () {
+            res.redirect('/dashboard');
+        })
+        .catch(err => console.log('Error: ' + err));
 });
 
-router.post('/saveFav', (req,res,next) =>{
-    //console.log(req.body.userName);
+// Save Favourite Match Handle
+router.post('/saveFav',ensureAuthenticated, (req,res) =>{
     let name = req.body.userName;
-    let match = req.body.match;
+    let matchObject = {
+        matchId: req.body.matchId,
+        match: req.body.match
+    };
     let userToUpdate = User.findOne({name: name});
 
-    //User.update({ name: name },{$push: {favouriteMatches: match}})
-    userToUpdate.update({$push: {favouriteMatches: match}})
-        .then(function () {
+    //Check if match is already in favourites
+    userToUpdate.find( { "favouriteMatches.matchId": { $in: [ req.body.matchId ] } } )
+        .then(user => {
+        if(user.length === 0) {
+            //If it is not:
+            User.updateOne({name: name}, {$push: {favouriteMatches: matchObject}})
+                .then(function () {
+                    req.flash('success_msg', 'This match was added to favourites');
+                    res.redirect('back');
+                })
+                .catch(err => console.log('Error: ' + err));
 
-            req.flash('success_msg', 'This match was added to favourites');
-        })
-        .catch(err => console.log('Vituiks män: ' + err));
-
-    console.log(userToUpdate.find({}));
+        }else{
+            //If it is:
+            req.flash('error_msg', 'This match is already in your favourites');
+            res.redirect('back');
+        }
+    });
 });
 
+// Remove Favourite Matches Handle
+router.post('/removeFav',ensureAuthenticated,(req,res) =>{
+    let name = req.body.userName;
+    let matchId = req.body.matchId;
+    let userToUpdate = User.findOne({name: name});
+
+    //Check if match exists
+    userToUpdate.find( { "favouriteMatches.matchId": { $in: [ req.body.matchId ] } } )
+        .then(user => {
+            if(user.length === 0) {
+                //If it does not:
+                req.flash('error_msg', 'This match is not in your favourites');
+                res.redirect('back');
+            }else{
+                //If it does:
+                User.updateOne({name: name},
+                    {$pull: {favouriteMatches: {matchId: matchId}}})
+                    .then(function () {
+                        req.flash('success_msg', 'This match was deleted from favourites');
+                        res.redirect('back');
+                    })
+                    .catch(err => console.log('Error: ' + err));
+            }
+        });
+});
+
+// Show Favourite Matches Handle
+router.get('/showFavs/:originalname/:pubgname',ensureAuthenticated, (req,res,next) =>{
+    let name = req.params.originalname;
+    let pubgname = req.params.pubgname;
+    let userToGetMatchesFrom = User.findOne({name: name});
+    let favouriteMatches = [];
+
+        userToGetMatchesFrom.findOne( { },{favouriteMatches}, function(err, item) {
+            let matchIds = [];
+            for(var i in item.favouriteMatches){
+                if(item.favouriteMatches[i].matchId !== undefined) {
+                    matchIds.push(item.favouriteMatches[i].matchId);
+                }
+            }
+            let matchIdsJson = JSON.stringify(matchIds.reverse());
+            res.render('favourites', {
+                matchIds: matchIdsJson,
+                name: name,
+                pubgname: pubgname});
+    });
+});
 // Login handle
 router.post('/login', (req,res,next) =>{
     passport.authenticate('local', {
@@ -137,7 +196,5 @@ router.get('/logout', (req,res) => {
     req.flash('success_msg', 'You are logged out');
     res.redirect('/users/login');
 });
-
-//Liikaa html (Korjaa) (AJAX)
 
 module.exports = router;
