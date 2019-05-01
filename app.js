@@ -6,16 +6,16 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require("passport");
 const bodyParser = require('body-parser');
-const fetch = require("node-fetch");
 
 const app = express();
 // Passport config
 require('./config/passport')(passport);
 
+// Matches controller
+const matchesController = require('./controllers/matchesController');
+
 // DB Config
 const db = require('./config/keys').MongoURI;
-
-const apiKey = require('./config/conf').apiKey;
 
 // Connect to mongo
 connectToUserDatabase();
@@ -72,22 +72,20 @@ app.use('/users', require('./routes/users'));
 //____________________PUBG___________________________________
 
 app.get('/playerName/:id', async (req, res) => {
-    let playername = req.params.id;
-    let url = "https://api.pubg.com/shards/pc-eu/players?filter[playerNames]=" + playername;
-    let response = await getRecentMatches(url);
+    let name = req.params.id;
+    let response = await matchesController.getMatches(name);
     res.send(response);
 });
 
 app.get('/favouriteMatches/:id', async (req, res) => {
     let favMatches = JSON.parse(req.params.id);
-    let response = await getFavMatchBasics(favMatches);
+    let response = await matchesController.getFavouriteMatches(favMatches);
     res.send(response);
 });
 
 app.get('/matchBasics/:id', async (req, res) => {
     let matchId = req.params.id;
-    let url = "https://api.pubg.com/shards/eu/matches/" + matchId;
-    let response = await getMatchBasics(url);
+    let response = await matchesController.getMatchBasicData(matchId);
     res.send(response);
 });
 
@@ -95,136 +93,6 @@ app.get('/matchDetails/:id/:pubgName/:userName', async (req, res) => {
     let matchId = req.params.id;
     let pubgName = req.params.pubgName;
     let userName = req.params.userName;
-    let url = "https://api.pubg.com/shards/eu/matches/" + matchId;
-    let matchBasics = await getMatchBasics(url);
-    let telemetryUrl = await matchBasics.telemetryEventsURL;
-    let response = await getTelemetryEvents(telemetryUrl, pubgName);
-    let strngRes = JSON.stringify(response);
-    res.render('matchDetails',{ statistics: strngRes, userName: userName, matchId: matchId });
+    let response = await matchesController.getMatchDetails(matchId, pubgName)
+    res.render('matchDetails',{ statistics: response, userName: userName, matchId: matchId });
 });
-
-const apiRequestConfig = {
-    headers: {
-        Authorization: `Bearer ${apiKey}`,
-        Accept: 'application/vnd.api+json'
-    }
-};
-
-// Gets recent played matches
-async function getRecentMatches(url) {
-    const recentMatchDetails = {};
-
-    const response = await fetch(url, apiRequestConfig);
-    const object = await response.json();
-
-    let recentMatchesArray = await object.data[0].relationships.matches.data;
-
-    for(var i in recentMatchesArray){
-        let matchBasicsURL = "https://api.pubg.com/shards/eu/matches/" + recentMatchesArray[i].id;
-        recentMatchDetails[i] = {
-            matchId: recentMatchesArray[i].id,
-            matchDetails: await getMatchBasics(matchBasicsURL)};
-    }
-    return(recentMatchDetails);
-}
-
-async function getFavMatchBasics(matchIds){
-    const favouriteMatchDetails = {};
-    for(var i in matchIds){
-        let matchBasicsURL = "https://api.pubg.com/shards/eu/matches/" + matchIds[i];
-        favouriteMatchDetails[i] = {
-            matchId: matchIds[i],
-            matchDetails: await getMatchBasics(matchBasicsURL)};
-    }
-    return(favouriteMatchDetails);
-}
-
-// Gets basic information about each match
-async function getMatchBasics(url) {
-
-    const response = await fetch(url, apiRequestConfig);
-    const object = await response.json();
-    let matchBasics = await object.data.attributes;
-
-
-    //Searches the URLs of telemetry events for each match
-    let included = await object.included;
-    let asset = {};
-
-    for (var i in included){
-        if (included[i].type === 'asset'){
-            asset = included[i];
-        }
-    }
-    matchBasics.telemetryEventsURL = asset.attributes.URL;
-    return(matchBasics);
-}
-
-async function getTelemetryEvents(url, selectedPlayer) {
-
-    const response = await fetch(url, apiRequestConfig);
-    const object = await response.json();
-
-    const allKillsInTheGame = [];
-    const allKnocksInTheGame = [];
-    const allDamagesInTheGame = [];
-
-    const selectedPlayerKills = [];
-    const selectedPlayerKnocks = [];
-    const selectedPlayerDamages = [];
-
-    var selectedPlayerKillsKnocksAndDamages;
-
-    //Get all kills, knocks and damages
-    for(var i in object){
-        //Get all kills in the game
-        if(object[i]._T === "LogPlayerKill"){
-            allKillsInTheGame.push(object[i])
-        }
-        //Get all knocks in the game
-        if(object[i]._T === "LogPlayerMakeGroggy"){
-            allKnocksInTheGame.push(object[i])
-        }
-        //Get all damages dealt in the game
-        if(object[i]._T === "LogPlayerTakeDamage"){
-            allDamagesInTheGame.push(object[i])
-        }
-    }
-
-    //Get kills, knocks and damages of a specific player
-    //Get the kills of a selected player
-    for(var i in allKillsInTheGame){
-        if(allKillsInTheGame[i].killer.name === selectedPlayer){
-            selectedPlayerKills.push(allKillsInTheGame[i]);
-        }
-    }
-    //Get the knocks of a selected player
-    for(var i in allKnocksInTheGame){
-        if (allKnocksInTheGame[i].attacker !== null) {
-            if (allKnocksInTheGame[i].attacker.name === selectedPlayer) {
-                selectedPlayerKnocks.push(allKnocksInTheGame[i]);
-            }
-        }
-    }
-    //Get the damages dealt by a selected player
-    for(var i in allDamagesInTheGame){
-        if (allDamagesInTheGame[i].attacker !== null) {
-            if (allDamagesInTheGame[i].victim.name !== selectedPlayer) {
-                if (allDamagesInTheGame[i].attacker.name === selectedPlayer) {
-                    selectedPlayerDamages.push(allDamagesInTheGame[i]);
-                }
-            }
-        }
-    }
-
-    //Creates an object of all kills, knocks and damages of a selected player
-    selectedPlayerKillsKnocksAndDamages = {
-        kills: selectedPlayerKills,
-        knocks: selectedPlayerKnocks,
-        damages: selectedPlayerDamages
-    };
-    return(selectedPlayerKillsKnocksAndDamages);
-}
-
-
-
