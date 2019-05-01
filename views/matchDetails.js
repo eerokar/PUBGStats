@@ -2,7 +2,7 @@ const responseText = document.getElementById("data").innerText;
 const userName = document.getElementById("userName").innerText;
 const matchId = document.getElementById("matchId").innerText;
 const data = JSON.parse(responseText);
-const url = 'https://localhost:3000';
+const url = 'https://env-0097919.jelastic.metropolia.fi';
 
 saveObject = {
     userName: userName,

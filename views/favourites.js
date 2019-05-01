@@ -2,7 +2,7 @@ const matchIds = document.getElementById("matchIds").innerText;
 const userName = document.getElementById("name").innerText;
 const pubgName = document.getElementById("pubgname").innerText;
 console.log(matchIds);
-const url = 'https://localhost:3000';
+const url = 'https://env-0097919.jelastic.metropolia.fi';
 
 
 // Getting hte JSON of recent matches
