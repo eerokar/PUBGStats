@@ -3,3 +3,4 @@ ssl-cert.pem
 ssl-key.pem
 .idea/
 .env
+config/conf.json
