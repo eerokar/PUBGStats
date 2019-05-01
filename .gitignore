@@ -2,3 +2,4 @@ node_modules/
 ssl-cert.pem
 ssl-key.pem
 .idea/
+.env
