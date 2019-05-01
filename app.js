@@ -48,7 +48,7 @@ function connectToUserDatabase() {
 function connectToUserDatabase() {
     mongoose.connect(db, { useNewUrlParser: true }).then(() => {
         console.log('Connected successfully.');
-        https.createServer(options, app).listen(PORT);
+        app.listen(process.env.APP_PORT);
     }, err => {
         console.log('Connection to db failed: ' + err);
     });
