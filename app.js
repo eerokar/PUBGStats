@@ -46,14 +46,11 @@ function connectToUserDatabase() {
 }
 */
 function connectToUserDatabase() {
-    mongoose.connect(`mongodb://${process.env.DB_USER}:${process.env.DB_PWD}@${process.env.DB_HOST}:${process.env.DB_PORT}/jellyDB`, { useNewUrlParser: true }).then(() => {
+    mongoose.connect(db, { useNewUrlParser: true }).then(() => {
         console.log('Connected successfully.');
-        app.listen(process.env.APP_PORT);
-    //https.createServer(options, app).listen(PORT);
-        console.log('-----------------------------------------------------------');
+        https.createServer(options, app).listen(PORT);
     }, err => {
         console.log('Connection to db failed: ' + err);
-        console.log('-----------------------------------------------------------');
     });
 }
 
