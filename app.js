@@ -6,24 +6,9 @@ const flash = require('connect-flash');
 const session = require('express-session');
 const passport = require("passport");
 const bodyParser = require('body-parser');
-
-const https = require('https');
-const fs = require('fs');
-
 const fetch = require("node-fetch");
 
-const sslkey = fs.readFileSync('ssl-key.pem');
-const sslcert = fs.readFileSync('ssl-cert.pem');
-
-const url = 'https://localhost:';
-
-const options = {
-    key: sslkey,
-    cert: sslcert
-};
-
 const app = express();
-
 // Passport config
 require('./config/passport')(passport);
 
@@ -35,16 +20,6 @@ const apiKey = require('./config/conf').apiKey;
 // Connect to mongo
 connectToUserDatabase();
 
-/*
-function connectToUserDatabase() {
-    mongoose.connect(db, {useNewUrlParser: true});
-    mongoose.connection.once('open',function () {
-        console.log('connection has been made');
-    }).on('error',function (error) {
-        console.log(error)
-    });
-}
-*/
 function connectToUserDatabase() {
     mongoose.connect(db, { useNewUrlParser: true }).then(() => {
         console.log('Connected successfully.');
@@ -68,7 +43,6 @@ app.use(express.urlencoded({extended: true}));
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-
 
 // Express session
 app.use(session({
@@ -95,10 +69,7 @@ app.use((req, res, next) => {
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
 
-const PORT = process.env.PORT ||  3000;
-
 //____________________PUBG___________________________________
-
 
 app.get('/playerName/:id', async (req, res) => {
     let playername = req.params.id;
@@ -254,8 +225,6 @@ async function getTelemetryEvents(url, selectedPlayer) {
     };
     return(selectedPlayerKillsKnocksAndDamages);
 }
-
-//https.createServer(options, app).listen(PORT);
 
 
 
