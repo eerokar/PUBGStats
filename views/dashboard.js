@@ -1,6 +1,7 @@
 const userName = document.getElementById("name").innerText;
 const pubgName = document.getElementById("pubgname").innerText;
 const url = 'https://env-0097919.jelastic.metropolia.fi';
+//const url = 'http://localhost:3000';
 
 // Getting hte JSON of recent matches
 request = new XMLHttpRequest;
@@ -17,10 +18,17 @@ request.onload = function() {
             const matchimage = document.createElement("img");
             const mapNameText = document.createElement('div');
             const mapDetailsText = document.createElement('div');
+            const datePlayedText = document.createElement('div');
+            const datePlayed = data[i].matchDetails.createdAt;
+            var dateConverted = new Date(datePlayed).toLocaleString('en-GB');
+            var dateWithDots = dateConverted.replace(/\//g, '.');
+            var dateWithSpace = dateWithDots.replace(/,/g, '\n');
             match.setAttribute('matchId', data[i].matchId);
             match.setAttribute('class', 'matchesImageDiv');
+            matchimage.setAttribute('class', 'matchesImage');
             mapNameText.setAttribute('class', 'matchNameText');
             mapDetailsText.setAttribute('class', 'matchDetailsText');
+            datePlayedText.setAttribute('class', 'datePlayedText');
 
             match.addEventListener("click", function(){
                 request.open('GET', url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName, true);
@@ -67,10 +75,14 @@ request.onload = function() {
             } else {
                 mapDetailsText.innerText = 'Custom';
             }
-            //match.onclick = onClick;
+
+            datePlayedText.innerText = 'Played at: \n ' + dateWithSpace;
+
+            matchimage.style.borderRadius = '15px';
             match.appendChild(matchimage);
             match.appendChild(mapNameText);
             match.appendChild(mapDetailsText);
+            match.appendChild(datePlayedText);
 
             document.body.appendChild(match);
         }

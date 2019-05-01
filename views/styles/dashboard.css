@@ -10,6 +10,32 @@
     height: auto;
     word-wrap: break-word;
     margin: 15px auto;
+    border-radius: 15px;
+}
+
+.top{
+    position: relative;
+    display: block;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: column;
+    flex-direction: column;
+    max-width: 1005px;
+    width: auto;
+    height: auto;
+    background: #132f3d;
+    word-wrap: break-word;
+    padding: 20px;
+    margin: 15px auto;
+    border-radius: 15px;
+}
+
+@media screen and (max-width: 767px) {
+    .helmet {display:none;}
+}
+
+.matchesImageDiv:hover .matchNameText{
+    color: #efb200;
 }
 
 .matchNameText {
@@ -17,7 +43,7 @@
     position: absolute;
     top: 20px;
     left: 20px;
-    color: white;
+    color: #ffffff;
     padding-left: 20px;
     padding-right: 20px;
 }
@@ -26,6 +52,16 @@
     font-size: x-large;
     position: absolute;
     top: 80px;
+    left: 20px;
+    color: white;
+    padding-left: 20px;
+    padding-right: 20px;
+}
+
+.datePlayedText {
+    font-size: x-large;
+    position: absolute;
+    top: 140px;
     left: 20px;
     color: white;
     padding-left: 20px;
@@ -43,11 +79,27 @@
     font-weight:bold;
     padding:4px 8px;
     text-decoration:none;
+    border-radius: 10px;
+}
+
+.removeButton:hover {
+    background-color: #43140f;
 }
 
 .icon {
     position: relative;
-    height: 20px;
+    max-width: 20px;
+    width: auto;
+    height: auto;
+}
+
+.helmet{
+    position: absolute;
+    max-width: 210px;
+    width: auto;
+    height: auto;
+    top: -10px;
+    right: 20px;
 }
 
 /*replace the content value with the

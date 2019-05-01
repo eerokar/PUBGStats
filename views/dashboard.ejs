@@ -1,12 +1,16 @@
 <head>
 <title>PUBG Stats</title>
-    </head>
-<h1 class="mt-4">PUBG Stats Service (work in progress)</h1>
+</head>
+<div class="top">
+<h1 class="mt-4">PUBG Stats Service</h1> <img src="../image-assets/pubg-level-3-helmet.png" class="helmet">
+
 <link rel="stylesheet" type="text/css" href="/views/styles/dashboard.css">
 <p id="name"style="display:none"><%= name %></p>
 <p id="pubgname"style="display:none"><%= pubgname %></p>
 <p class="lead mb-3">Showing latest matches of: <%= pubgname %></p>
-<a href="/users/logout" class="btn btn-secondary">Logout</a> <a href="/users/editProfile/<%= name %>/<%= pubgname %>" class="btn btn-secondary">Change PUBG nickname</a> <a href="/users/showFavs/<%= name %>/<%= pubgname %>" class="btn btn-secondary">Show favourite matches</a>
+    <a href="/users/editProfile/<%= name %>/<%= pubgname %>" class="btn btn-secondary">Change PUBG nickname</a>  <a href="/users/showFavs/<%= name %>/<%= pubgname %>" class="btn btn-secondary">Show favourite matches</a>  <a href="/users/logout" class="btn btn-secondary">Logout</a>
+
+
 <body>
 
 <div class="matches">
@@ -14,3 +18,4 @@
 </div>
 
 </body>
+</div>

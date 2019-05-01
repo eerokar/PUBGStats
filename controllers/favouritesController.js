@@ -26,9 +26,11 @@ module.exports = {
 
             userToGetMatchesFrom.findOne({}, {favouriteMatches}, function (err, item) {
                 let matchIds = [];
-                for (var i in item.favouriteMatches) {
-                    if (item.favouriteMatches[i].matchId !== undefined) {
-                        matchIds.push(item.favouriteMatches[i].matchId);
+                if (item !== null) {
+                    for (var i in item.favouriteMatches) {
+                        if (item.favouriteMatches[i].matchId !== undefined) {
+                            matchIds.push(item.favouriteMatches[i].matchId);
+                        }
                     }
                 }
                 resolve (matchIds.reverse());
