@@ -93,6 +93,13 @@ app.get('/matchDetails/:id/:pubgName/:userName', async (req, res) => {
     let matchId = req.params.id;
     let pubgName = req.params.pubgName;
     let userName = req.params.userName;
-    let response = await matchesController.getMatchDetails(matchId, pubgName)
+    let response = await matchesController.getMatchDetails(matchId, pubgName);
     res.render('matchDetails',{ statistics: response, userName: userName, matchId: matchId });
+});
+
+app.get('/matchDetailsNoRender/:id/:pubgName', async (req, res) => {
+    let matchId = req.params.id;
+    let pubgName = req.params.pubgName;
+    let response = await matchesController.getMatchDetails(matchId, pubgName);
+    res.send(response);
 });

@@ -83,66 +83,67 @@ async function getMatchBasics(url) {
 }
 
 async function getTelemetryEvents(url, selectedPlayer) {
+    return new Promise(async function(resolve, reject) {
+        const response = await fetch(url, apiRequestConfig);
+        const object = await response.json();
 
-    const response = await fetch(url, apiRequestConfig);
-    const object = await response.json();
+        const allKillsInTheGame = [];
+        const allKnocksInTheGame = [];
+        const allDamagesInTheGame = [];
 
-    const allKillsInTheGame = [];
-    const allKnocksInTheGame = [];
-    const allDamagesInTheGame = [];
+        const selectedPlayerKills = [];
+        const selectedPlayerKnocks = [];
+        const selectedPlayerDamages = [];
 
-    const selectedPlayerKills = [];
-    const selectedPlayerKnocks = [];
-    const selectedPlayerDamages = [];
+        var selectedPlayerKillsKnocksAndDamages;
 
-    var selectedPlayerKillsKnocksAndDamages;
-
-    //Get all kills, knocks and damages
-    for(var i in object){
-        //Get all kills in the game
-        if(object[i]._T === "LogPlayerKill"){
-            allKillsInTheGame.push(object[i])
-        }
-        //Get all knocks in the game
-        if(object[i]._T === "LogPlayerMakeGroggy"){
-            allKnocksInTheGame.push(object[i])
-        }
-        //Get all damages dealt in the game
-        if(object[i]._T === "LogPlayerTakeDamage"){
-            allDamagesInTheGame.push(object[i])
-        }
-    }
-
-    //Get kills, knocks and damages of a specific player
-    //Get the kills of a selected player
-    for(var i in allKillsInTheGame){
-        if(allKillsInTheGame[i].killer.name === selectedPlayer){
-            selectedPlayerKills.push(allKillsInTheGame[i]);
-        }
-    }
-    //Get the knocks of a selected player
-    for(var i in allKnocksInTheGame){
-        if (allKnocksInTheGame[i].attacker !== null) {
-            if (allKnocksInTheGame[i].attacker.name === selectedPlayer) {
-                selectedPlayerKnocks.push(allKnocksInTheGame[i]);
+        //Get all kills, knocks and damages
+        for (var i in object) {
+            //Get all kills in the game
+            if (object[i]._T === "LogPlayerKill") {
+                allKillsInTheGame.push(object[i])
+            }
+            //Get all knocks in the game
+            if (object[i]._T === "LogPlayerMakeGroggy") {
+                allKnocksInTheGame.push(object[i])
+            }
+            //Get all damages dealt in the game
+            if (object[i]._T === "LogPlayerTakeDamage") {
+                allDamagesInTheGame.push(object[i])
             }
         }
-    }
-    //Get the damages dealt by a selected player
-    for(var i in allDamagesInTheGame){
-        if (allDamagesInTheGame[i].attacker !== null) {
-            if (allDamagesInTheGame[i].victim.name !== selectedPlayer) {
-                if (allDamagesInTheGame[i].attacker.name === selectedPlayer) {
-                    selectedPlayerDamages.push(allDamagesInTheGame[i]);
+
+        //Get kills, knocks and damages of a specific player
+        //Get the kills of a selected player
+        for (var i in allKillsInTheGame) {
+            if (allKillsInTheGame[i].killer.name === selectedPlayer) {
+                selectedPlayerKills.push(allKillsInTheGame[i]);
+            }
+        }
+        //Get the knocks of a selected player
+        for (var i in allKnocksInTheGame) {
+            if (allKnocksInTheGame[i].attacker !== null) {
+                if (allKnocksInTheGame[i].attacker.name === selectedPlayer) {
+                    selectedPlayerKnocks.push(allKnocksInTheGame[i]);
                 }
             }
         }
-    }
-    //Creates an object of all kills, knocks and damages of a selected player
-    selectedPlayerKillsKnocksAndDamages = {
-        kills: selectedPlayerKills,
-        knocks: selectedPlayerKnocks,
-        damages: selectedPlayerDamages
-    };
-    return(selectedPlayerKillsKnocksAndDamages);
+        //Get the damages dealt by a selected player
+        for (var i in allDamagesInTheGame) {
+            if (allDamagesInTheGame[i].attacker !== null) {
+                if (allDamagesInTheGame[i].victim.name !== selectedPlayer) {
+                    if (allDamagesInTheGame[i].attacker.name === selectedPlayer) {
+                        selectedPlayerDamages.push(allDamagesInTheGame[i]);
+                    }
+                }
+            }
+        }
+        //Creates an object of all kills, knocks and damages of a selected player
+        selectedPlayerKillsKnocksAndDamages = {
+            kills: selectedPlayerKills,
+            knocks: selectedPlayerKnocks,
+            damages: selectedPlayerDamages
+        };
+        resolve (selectedPlayerKillsKnocksAndDamages);
+    });
 }

@@ -5,6 +5,10 @@ console.log(matchIds);
 const url = 'https://env-0097919.jelastic.metropolia.fi';
 //const url = 'http://localhost:3000';
 
+//Loader
+const loadingIcon = document.createElement("div");
+loadingIcon.setAttribute('class', 'loader');
+document.body.appendChild(loadingIcon);
 
 // Getting hte JSON of recent matches
 request = new XMLHttpRequest;
@@ -13,7 +17,7 @@ if(matchIds === ""){
 }else{
     request.open('GET', url + '/favouriteMatches/' + matchIds, true);
 
-    request.onload = function () {
+    request.onload = async function () {
         if (request.status >= 200 && request.status < 400) {
             // Success!
 
@@ -24,6 +28,8 @@ if(matchIds === ""){
                 const matchimageDiv = document.createElement("div");
                 const matchimage = document.createElement("img");
                 const mapNameText = document.createElement('div');
+                const killcountText = document.createElement('div');
+                const knockcountText = document.createElement('div');
                 const mapDetailsText = document.createElement('div');
                 const datePlayedText = document.createElement('div');
                 const datePlayed = data[i].matchDetails.createdAt;
@@ -40,6 +46,9 @@ if(matchIds === ""){
 
                 mapNameText.setAttribute('class', 'matchNameText');
                 mapDetailsText.setAttribute('class', 'matchDetailsText');
+
+                killcountText.setAttribute('class', 'killCountText');
+                knockcountText.setAttribute('class', 'knockCountText');
 
                 removeFavBtn.setAttribute('class', 'removeButton');
                 removeIcon.setAttribute('class', 'icon');
@@ -100,6 +109,10 @@ if(matchIds === ""){
                 } else {
                     mapDetailsText.innerText = 'Custom';
                 }
+                let killcount = await getKillsOfTheGame(data[i].matchId, 'kills');
+                let knockcount = await getKillsOfTheGame(data[i].matchId, 'knocks');
+                killcountText.innerText = 'Kills: ' + killcount;
+                knockcountText.innerText = 'Knocks: ' + knockcount;
 
                 datePlayedText.innerText = 'Played at: \n ' + dateWithSpace;
 
@@ -110,9 +123,13 @@ if(matchIds === ""){
                 match.appendChild(matchimageDiv);
                 match.appendChild(mapNameText);
                 match.appendChild(mapDetailsText);
+                match.appendChild(killcountText);
+                match.appendChild(knockcountText);
                 match.appendChild(datePlayedText);
 
-
+                if(document.body.contains(loadingIcon)) {
+                    document.body.removeChild(loadingIcon);
+                }
                 document.body.appendChild(match);
             }
 
@@ -126,5 +143,26 @@ if(matchIds === ""){
 request.onerror = function() {
     console.log("here was a connection error of some sort")
 };
-//-----------//
+//-----------------//
+
 request.send();
+
+async function getKillsOfTheGame(matchId, type) {
+    return new Promise(function(resolve) {
+        let killsRequest = new XMLHttpRequest;
+        killsRequest.open('GET', url + '/matchDetailsNoRender/' + matchId + '/' + pubgName, true);
+        killsRequest.onload = function () {
+            if(type === 'kills') {
+                const data = JSON.parse(killsRequest.responseText);
+                let killcount = data.kills.length;
+                resolve(killcount);
+            }
+            if(type === 'knocks') {
+                const data = JSON.parse(killsRequest.responseText);
+                let knockcount = data.knocks.length;
+                resolve(knockcount);
+            }
+        };
+        killsRequest.send();
+    });
+}
