@@ -2641,6 +2641,13 @@ fieldset:disabled a.btn {
 
 .btn-secondary {
   color: #fff;
+  background-color: #222222;
+  border-color: #222222;
+  margin: 5px;
+}
+
+.btn-secondary-addFav {
+  color: #fff;
   background-color: #191919;
   border-color: #191919;
   margin: 5px;
