@@ -23,7 +23,7 @@ if(matchIds === ""){
 
             const data = JSON.parse(request.responseText);
             console.log(data);
-            if(data.isEmpty()){
+            if(data.length === 0){
                 const match = document.createElement("div");
                 match.setAttribute('class', 'matchesImageDiv');
                 match.innerText = 'No matches found';
