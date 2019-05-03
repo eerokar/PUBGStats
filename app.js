@@ -15,7 +15,7 @@ require('./config/passport')(passport);
 const matchesController = require('./controllers/matchesController');
 
 // DB Config
-const db = require('./config/keys').MongoURILocal;
+const db = require('./config/keys').MongoURI;
 
 // Connect to mongo
 connectToUserDatabase();

@@ -1,8 +1,8 @@
 const matchIds = document.getElementById("matchIds").innerText;
 const userName = document.getElementById("name").innerText;
 const pubgName = document.getElementById("pubgname").innerText;
-//const url = 'https://env-0097919.jelastic.metropolia.fi';
-const url = 'http://localhost:3000';
+const url = 'https://env-0097919.jelastic.metropolia.fi';
+//const url = 'http://localhost:3000';
 
 //Loader
 const loadingIcon = document.createElement("div");
