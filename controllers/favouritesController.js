@@ -50,5 +50,24 @@ module.exports = {
                         .catch(err => console.log('Error: ' + err));
                 }
             });
+    },
+
+    checkIfFavouriteExists: function(name, matchId) {
+        return new Promise(function(resolve) {
+            let userToUpdate = User.findOne({name: name});
+            //Check if favourite match exists
+            userToUpdate.find({"favouriteMatches.matchId": {$in: [matchId]}})
+                .then(user => {
+                    if (user.length !== 0) {
+                        //If it does:
+                        let found = true;
+                        resolve(found);
+                    } else {
+                        //If it does not:
+                        let found = false;
+                        resolve(found);
+                    }
+                });
+        });
     }
 };

@@ -5,6 +5,8 @@ const data = JSON.parse(responseText);
 const url = 'https://env-0097919.jelastic.metropolia.fi';
 //const url = 'http://localhost:3000';
 
+var isFavourited;
+
 saveObject = {
     userName: userName,
     matchId: matchId,
@@ -12,21 +14,55 @@ saveObject = {
 };
 
 const saveToFavsBtn = document.getElementById('saveToFavsBtn');
+checkIfValueExists();
 
-//Save this match to favourites
+//Change the functionality of the add/remove favourite button
+async function checkIfValueExists(){
+    let doesExsist = await getFavExistsValue();
+    if (doesExsist === 'true'){
+        isFavourited = true;
+        saveToFavsBtn.innerText = 'Remove from favourites'
+    }else{
+        isFavourited = false;
+        saveToFavsBtn.innerText = 'Save to favourites'
+    }
+}
+
+//Check if the match is in favourites
+async function getFavExistsValue() {
+return new Promise(function(resolve) {
+        let checkRequest = new XMLHttpRequest;
+        checkRequest.open('GET', url + '/users/checkIfExists/' + userName + '/' + matchId, true);
+        checkRequest.onload = function () {
+                let value = checkRequest.response;
+                resolve(value);
+        };
+        checkRequest.send();
+    });
+}
+
+//Save this match to favourites or remove it from the favourites
 saveToFavsBtn.addEventListener("click", function(){
-    const request = new XMLHttpRequest;
-    request.open('POST', url + '/users/saveFav', true);
-    request.setRequestHeader('Content-Type', 'application/json');
-    request.send(JSON.stringify(saveObject));
+    if(!isFavourited) {
+        const request = new XMLHttpRequest;
+        request.open('POST', url + '/users/saveFav', true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(saveObject));
+        window.location.reload(true);
+    }else{
+        const removeDetails = {
+            userName: userName,
+            matchId: matchId,
+        };
+        const request = new XMLHttpRequest;
+        request.open('POST', url + '/users/removeFav', true);
+        request.setRequestHeader('Content-Type', 'application/json');
+        request.send(JSON.stringify(removeDetails));
+        window.location.reload(true);
+    }
 });
 
-const DOMobject = document.createElement('div');
-DOMobject.id = 'myDiv';
-DOMobject.style.width = 'fit-content';
-DOMobject.style.height = 'fit-content';
-DOMobject.style.background = 'green';
-
+//Object for victim stats
 victimStats = {
     name: '',
     areaHit: '',
@@ -34,6 +70,7 @@ victimStats = {
     damageDone: 0
 };
 
+//Arrays for kills, knocks and damages
 const killedVictims = [];
 const knockedVictims = [];
 const woundedVictims = [];

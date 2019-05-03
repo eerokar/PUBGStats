@@ -83,8 +83,8 @@ request.onload = async function() {
             } else {
                 mapDetailsText.innerText = 'Custom';
             }
-            let killcount = await getKillsOfTheGame(data[i].matchId, 'kills');
-            let knockcount = await getKillsOfTheGame(data[i].matchId, 'knocks');
+            let killcount = await getKillsAndKnocksOfTheGame(data[i].matchId, 'kills');
+            let knockcount = await getKillsAndKnocksOfTheGame(data[i].matchId, 'knocks');
             killcountText.innerText = 'Kills: ' + killcount;
             knockcountText.innerText = 'Knocks: ' + knockcount;
 
@@ -117,7 +117,7 @@ request.onerror = function() {
 
 request.send();
 
-async function getKillsOfTheGame(matchId, type) {
+async function getKillsAndKnocksOfTheGame(matchId, type) {
     return new Promise(function(resolve) {
         let killsRequest = new XMLHttpRequest;
         killsRequest.open('GET', url + '/matchDetailsNoRender/' + matchId + '/' + pubgName, true);

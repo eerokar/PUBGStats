@@ -64,8 +64,16 @@ router.post('/removeFav',ensureAuthenticated,(req,res) =>{
     res.redirect('back');
 });
 
+// Check if favourite exists
+router.get('/checkIfExists/:userName/:id',ensureAuthenticated, async (req,res) =>{
+    let name = req.params.userName;
+    let matchId = req.params.id;
+    let returnValue = await favouritesController.checkIfFavouriteExists(name, matchId);
+    res.send(returnValue);
+});
+
 // Show Favourite Matches Handle
-router.get('/showFavs/:originalname/:pubgname',ensureAuthenticated, async (req,res,next) =>{
+router.get('/showFavs/:originalname/:pubgname',ensureAuthenticated, async (req,res) =>{
     let name = req.params.originalname;
     let pubgname = req.params.pubgname;
     let matches = await favouritesController.showFavourites(name);
