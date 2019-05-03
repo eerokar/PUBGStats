@@ -1,7 +1,6 @@
 const matchIds = document.getElementById("matchIds").innerText;
 const userName = document.getElementById("name").innerText;
 const pubgName = document.getElementById("pubgname").innerText;
-console.log(matchIds);
 //const url = 'https://env-0097919.jelastic.metropolia.fi';
 const url = 'http://localhost:3000';
 
@@ -22,7 +21,6 @@ if(matchIds === ""){
             // Success!
 
             const data = JSON.parse(request.responseText);
-            console.log(data);
             if (Object.keys(data).length === 0){
                 const match = document.createElement("div");
                 match.setAttribute('class', 'matchesImageDiv');
