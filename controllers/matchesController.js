@@ -4,11 +4,11 @@ const fetch = require("node-fetch");
 module.exports = {
     getMatches: async (name) => {
         let url = "https://api.pubg.com/shards/pc-eu/players?filter[playerNames]=" + name;
-        let response = await getRecentMatches(url);
+        let response = await getRecentMatches(url, name);
         return(response)
     },
-    getFavouriteMatches: async (favouriteMatches) => {
-        let response = await getFavMatchBasics(favouriteMatches);
+    getFavouriteMatches: async (favouriteMatches, pubgName) => {
+        let response = await getFavMatchBasics(favouriteMatches, pubgName);
         return(response);
     },
     getMatchBasicData: async (id) => {
@@ -18,8 +18,8 @@ module.exports = {
     },
     getMatchDetails: async (id, pubgName) => {
         let url = "https://api.pubg.com/shards/eu/matches/" + id;
-        let matchBasics = await getMatchBasics(url);
-        let telemetryUrl = await matchBasics.telemetryEventsURL;
+        let matchBasics = await getMatchBasics(url, pubgName);
+        let telemetryUrl = await matchBasics.basics.telemetryEventsURL;
         let response = await getTelemetryEvents(telemetryUrl, pubgName);
         let strngRes = JSON.stringify(response);
         return(strngRes);
@@ -33,7 +33,7 @@ const apiRequestConfig = {
     }
 };
 // Gets recent played matches
-async function getRecentMatches(url) {
+async function getRecentMatches(url, pubgName) {
     const recentMatchDetails = {};
 
     const response = await fetch(url, apiRequestConfig);
@@ -41,45 +41,55 @@ async function getRecentMatches(url) {
 
     let recentMatchesArray = await object.data[0].relationships.matches.data;
 
+    recentMatchesArray.splice(0, 3);
     for(var i in recentMatchesArray){
         let matchBasicsURL = "https://api.pubg.com/shards/eu/matches/" + recentMatchesArray[i].id;
         recentMatchDetails[i] = {
             matchId: recentMatchesArray[i].id,
-            matchDetails: await getMatchBasics(matchBasicsURL)};
+            matchDetails: await getMatchBasics(matchBasicsURL, pubgName)};
     }
     return(recentMatchDetails);
 }
 
-async function getFavMatchBasics(matchIds){
+async function getFavMatchBasics(matchIds, pubgName){
     const favouriteMatchDetails = {};
     for(var i in matchIds){
         let matchBasicsURL = "https://api.pubg.com/shards/eu/matches/" + matchIds[i];
         favouriteMatchDetails[i] = {
             matchId: matchIds[i],
-            matchDetails: await getMatchBasics(matchBasicsURL)};
+            matchDetails: await getMatchBasics(matchBasicsURL, pubgName)};
     }
     return(favouriteMatchDetails);
 }
 
 // Gets basic information about each match
-async function getMatchBasics(url) {
-
+async function getMatchBasics(url, pubgName) {
     const response = await fetch(url, apiRequestConfig);
     const object = await response.json();
     let matchBasics = await object.data.attributes;
 
-
     //Searches the URLs of telemetry events for each match
     let included = await object.included;
     let asset = {};
+    let position;
 
     for (var i in included){
         if (included[i].type === 'asset'){
             asset = included[i];
         }
+        if (included[i].type === 'participant'){
+            let player = included[i];
+            if(player.attributes.stats.name === pubgName){
+                position = player.attributes.stats.winPlace;
+            }
+        }
     }
+    let basicsObject ={
+        basics: matchBasics,
+        position: position
+    };
     matchBasics.telemetryEventsURL = asset.attributes.URL;
-    return(matchBasics);
+    return(basicsObject);
 }
 
 async function getTelemetryEvents(url, selectedPlayer) {

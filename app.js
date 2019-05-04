@@ -77,9 +77,10 @@ app.get('/playerName/:id', async (req, res) => {
     res.send(response);
 });
 
-app.get('/favouriteMatches/:id', async (req, res) => {
+app.get('/favouriteMatches/:id/:pubgName', async (req, res) => {
     let favMatches = JSON.parse(req.params.id);
-    let response = await matchesController.getFavouriteMatches(favMatches);
+    let pubgName = req.params.pubgName;
+    let response = await matchesController.getFavouriteMatches(favMatches, pubgName);
     res.send(response);
 });
 

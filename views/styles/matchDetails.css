@@ -16,3 +16,12 @@
 .card {
     padding: 10px;
 }
+@media only screen and (min-device-width : 320px) and (max-device-width : 480px) {
+
+    .statsBackground {
+        text-overflow: ellipsis;
+        width: 370px;
+        white-space: nowrap;
+        overflow:hidden;
+    }
+}
