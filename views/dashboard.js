@@ -16,7 +16,6 @@ request.onload = async function() {
     if (request.status >= 200 && request.status < 400){
         // Success!
         const data = JSON.parse(request.responseText);
-        console.log(data[0].matchId);
         for(var i in data) {
             //Create button
             const match = document.createElement("div");

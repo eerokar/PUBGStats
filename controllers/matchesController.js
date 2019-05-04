@@ -40,8 +40,6 @@ async function getRecentMatches(url, pubgName) {
     const object = await response.json();
 
     let recentMatchesArray = await object.data[0].relationships.matches.data;
-
-    recentMatchesArray.splice(0, 3);
     for(var i in recentMatchesArray){
         let matchBasicsURL = "https://api.pubg.com/shards/eu/matches/" + recentMatchesArray[i].id;
         recentMatchDetails[i] = {
