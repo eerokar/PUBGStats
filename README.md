@@ -5,7 +5,11 @@ WEB-service for inspecting detailed stats of played matches in PUBG. A schoolpro
 
 ## APIDOC
 
-#### User
+#### Index
+* `'/' - GET` - Get the welcome page.
+* `'/dashboard' - GET` - Get the main page with recent matches if user is logged in.
+
+#### Users
 
 * `'/users/login' - GET` - Get the login page.
 * `'/users/login' - POST` - Login with your username and password.
@@ -29,5 +33,7 @@ WEB-service for inspecting detailed stats of played matches in PUBG. A schoolpro
 * `'/matches/favouriteMatches/:id/:pubgName' - GET` - Get favourite matches of a player
 * `'/matches/matchDetails/:id/:pubgName' - GET` - Get detailed information about a specific match.
 * `'/matchDetailsRender/:id/:pubgName/:userName' - GET` - Get the details page.
+
+
 
 #### Author Eero Karvonen
