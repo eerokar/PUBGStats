@@ -1,3 +1,4 @@
+'use strict';
 const apiKey = require('../config/conf').apiKey;
 const fetch = require("node-fetch");
 
@@ -9,11 +10,6 @@ module.exports = {
     },
     getFavouriteMatches: async (favouriteMatches, pubgName) => {
         let response = await getFavMatchBasics(favouriteMatches, pubgName);
-        return(response);
-    },
-    getMatchBasicData: async (id) => {
-        let url = "https://api.pubg.com/shards/eu/matches/" + id;
-        let response = await getMatchBasics(url);
         return(response);
     },
     getMatchDetails: async (id, pubgName) => {

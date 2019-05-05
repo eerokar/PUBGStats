@@ -10,7 +10,7 @@
             <p id="name"style="display:none"><%= name %></p>
             <p id="pubgname"style="display:none"><%= pubgname %></p>
             <%include ./partials/messages %>
-            <form action="/users/editProfile/<%= name %>/<%= pubgname %>" method="POST">
+            <form action="/users/editProfile/<%= name %>/<%= pubgname %>/?_method=PUT" method="POST">
                 <div class="form-group">
                     <label for="pubgname">PUBG player name</label>
                     <input

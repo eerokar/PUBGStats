@@ -1,8 +1,9 @@
+'use strict';
 const matchIds = document.getElementById("matchIds").innerText;
 const userName = document.getElementById("name").innerText;
 const pubgName = document.getElementById("pubgname").innerText;
 const url = 'https://env-0097919.jelastic.metropolia.fi';
-//const url = 'http://localhost:3000';
+//const url = 'http://localhost:3000'; //For testing in localhost
 
 //Loader
 const loadingIcon = document.createElement("div");
@@ -10,11 +11,11 @@ loadingIcon.setAttribute('class', 'loader');
 document.body.appendChild(loadingIcon);
 
 // Getting hte JSON of recent matches
-request = new XMLHttpRequest;
+const request = new XMLHttpRequest;
 if(matchIds === ""){
 
 }else{
-    request.open('GET', url + '/favouriteMatches/' + matchIds + '/' + pubgName, true);
+    request.open('GET', url + '/matches/favouriteMatches/' + matchIds + '/' + pubgName, true);
 
     request.onload = async function () {
         if (request.status >= 200 && request.status < 400) {
@@ -75,16 +76,16 @@ if(matchIds === ""){
                             matchId: match.getAttribute('matchId'),
                         };
                         const request = new XMLHttpRequest;
-                        request.open('POST', url + '/users/removeFav', true);
+                        request.open('DELETE', url + '/users/removeFav', true);
                         request.setRequestHeader('Content-Type', 'application/json');
                         request.send(JSON.stringify(removeDetails));
                         location.reload();
                     });
 
                     match.addEventListener("click", function () {
-                        request.open('GET', url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName, true);
+                        request.open('GET', url + '/matches/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName, true);
                         request.send();
-                        window.location.href = url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName;
+                        window.location.href = url + '/matches/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName;
                     });
 
                     //Change button text according to the map's name
@@ -152,7 +153,7 @@ if(matchIds === ""){
                 }
             }
 
-//------Erroreita----//
+//------Errors----//
 
         } else {
             console.log("We reached our target server, but it returned an error")
@@ -169,7 +170,7 @@ request.send();
 async function getKillsOfTheGame(matchId, type) {
     return new Promise(function(resolve) {
         let killsRequest = new XMLHttpRequest;
-        killsRequest.open('GET', url + '/matchDetailsNoRender/' + matchId + '/' + pubgName, true);
+        killsRequest.open('GET', url + '/matches/matchDetails/' + matchId + '/' + pubgName, true);
         killsRequest.onload = function () {
             if(type === 'kills') {
                 const data = JSON.parse(killsRequest.responseText);

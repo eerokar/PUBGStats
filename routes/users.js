@@ -1,7 +1,11 @@
+'use strict';
 const express = require('express');
 const router = express.Router();
 const passport = require('passport');
 const { ensureAuthenticated } = require('../config/auth');
+const methodOverride = require('method-override');
+
+router.use(methodOverride('_method'));
 
 //Controllers
 const favouritesController = require('../controllers/favouritesController');
@@ -18,6 +22,22 @@ router.get('/editProfile/:originalname/:originalpubgname',ensureAuthenticated, (
     name: req.user.name,
     pubgname: req.user.pubgname
 }));
+
+// Login handle
+router.post('/login', (req,res,next) =>{
+    passport.authenticate('local', {
+        successRedirect: '/dashboard',
+        failureRedirect: '/users/login',
+        failureFlash: true
+    })(req,res,next);
+});
+
+// Logout handle
+router.get('/logout', (req,res) => {
+    req.logout();
+    req.flash('success_msg', 'You are logged out');
+    res.redirect('/users/login');
+});
 
 // Register Handle
 router.post('/register', async (req, res) => {
@@ -39,7 +59,7 @@ router.post('/register', async (req, res) => {
 });
 
 // Edit Profile Handle
-router.post('/editProfile/:originalname/:originalpubgname',ensureAuthenticated, (req, res) => {
+router.put('/editProfile/:originalname/:originalpubgname',ensureAuthenticated, (req, res) => {
     let name = req.params.originalname;
     let originalPubgName = req.params.originalpubgname;
     const {pubgname: pubgname} = req.body;
@@ -57,7 +77,7 @@ router.post('/saveFav',ensureAuthenticated, (req,res) =>{
 });
 
 // Remove Favourite Matches Handle
-router.post('/removeFav',ensureAuthenticated,(req,res) =>{
+router.delete('/removeFav',ensureAuthenticated,(req,res) =>{
     let name = req.body.userName;
     let matchId = req.body.matchId;
     favouritesController.removeFavourite(name, matchId);
@@ -83,22 +103,6 @@ router.get('/showFavs/:originalname/:pubgname',ensureAuthenticated, async (req,r
             matchIds: matchIdsJson,
             name: name,
             pubgname: pubgname});
-});
-
-// Login handle
-router.post('/login', (req,res,next) =>{
-    passport.authenticate('local', {
-        successRedirect: '/dashboard',
-        failureRedirect: '/users/login',
-        failureFlash: true
-    })(req,res,next);
-});
-
-// Logout handle
-router.get('/logout', (req,res) => {
-    req.logout();
-    req.flash('success_msg', 'You are logged out');
-    res.redirect('/users/login');
 });
 
 module.exports = router;

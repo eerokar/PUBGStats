@@ -1,13 +1,14 @@
+'use strict';
 const responseText = document.getElementById("data").innerText;
 const userName = document.getElementById("userName").innerText;
 const matchId = document.getElementById("matchId").innerText;
 const data = JSON.parse(responseText);
 const url = 'https://env-0097919.jelastic.metropolia.fi';
-//const url = 'http://localhost:3000';
+//const url = 'http://localhost:3000'; //For testing in localhost
 
 var isFavourited;
 
-saveObject = {
+const saveObject = {
     userName: userName,
     matchId: matchId,
     match: responseText
@@ -55,7 +56,7 @@ saveToFavsBtn.addEventListener("click", function(){
             matchId: matchId,
         };
         const request = new XMLHttpRequest;
-        request.open('POST', url + '/users/removeFav', true);
+        request.open('DELETE', url + '/users/removeFav', true);
         request.setRequestHeader('Content-Type', 'application/json');
         request.send(JSON.stringify(removeDetails));
         window.location.reload(true);
@@ -63,7 +64,7 @@ saveToFavsBtn.addEventListener("click", function(){
 });
 
 //Object for victim stats
-victimStats = {
+const victimStats = {
     name: '',
     areaHit: '',
     gunShotWith: '',

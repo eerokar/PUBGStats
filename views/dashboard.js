@@ -1,7 +1,8 @@
+'use strict';
 const userName = document.getElementById("name").innerText;
 const pubgName = document.getElementById("pubgname").innerText;
 const url = 'https://env-0097919.jelastic.metropolia.fi';
-//const url = 'http://localhost:3000';
+//const url = 'http://localhost:3000'; //For testing in localhost
 
 //Loader
 const loadingIcon = document.createElement("div");
@@ -9,8 +10,8 @@ loadingIcon.setAttribute('class', 'loader');
 document.body.appendChild(loadingIcon);
 
 // Getting the JSON of recent matches
-request = new XMLHttpRequest;
-request.open('GET', url + '/playerName/' + pubgName, true);
+const request = new XMLHttpRequest;
+request.open('GET', url + '/matches/playerName/' + pubgName, true);
 
 request.onload = async function() {
     if (request.status >= 200 && request.status < 400){
@@ -41,9 +42,9 @@ request.onload = async function() {
             datePlayedText.setAttribute('class', 'datePlayedText');
 
             match.addEventListener("click", function(){
-                request.open('GET', url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName, true);
+                request.open('GET', url + '/matches/matchDetailsRender/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName, true);
                 request.send();
-                window.location.href = url + '/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName;
+                window.location.href = url + '/matches/matchDetailsRender/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName;
             });
 
             //Change button text according to the map's name
@@ -116,7 +117,7 @@ request.onload = async function() {
             document.body.appendChild(match);
         }
 
-//------Erroreita----//
+//------Errors----//
     } else {
         console.log("We reached our target server, but it returned an error")
     }
@@ -131,7 +132,7 @@ request.send();
 async function getKillsAndKnocksOfTheGame(matchId, type) {
     return new Promise(function(resolve) {
         let killsRequest = new XMLHttpRequest;
-        killsRequest.open('GET', url + '/matchDetailsNoRender/' + matchId + '/' + pubgName, true);
+        killsRequest.open('GET', url + '/matches/matchDetails/' + matchId + '/' + pubgName, true);
         killsRequest.onload = function () {
             if(type === 'kills') {
                 const data = JSON.parse(killsRequest.responseText);

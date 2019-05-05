@@ -11,9 +11,6 @@ const app = express();
 // Passport config
 require('./config/passport')(passport);
 
-// Matches controller
-const matchesController = require('./controllers/matchesController');
-
 // DB Config
 const db = require('./config/keys').MongoURI;
 
@@ -40,7 +37,6 @@ app.set('view engine', 'ejs');
 
 // Body Parser
 app.use(express.urlencoded({extended: true}));
-
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
@@ -68,39 +64,4 @@ app.use((req, res, next) => {
 // Routes
 app.use('/', require('./routes/index'));
 app.use('/users', require('./routes/users'));
-
-//____________________PUBG___________________________________
-
-app.get('/playerName/:id', async (req, res) => {
-    let name = req.params.id;
-    let response = await matchesController.getMatches(name);
-    res.send(response);
-});
-
-app.get('/favouriteMatches/:id/:pubgName', async (req, res) => {
-    let favMatches = JSON.parse(req.params.id);
-    let pubgName = req.params.pubgName;
-    let response = await matchesController.getFavouriteMatches(favMatches, pubgName);
-    res.send(response);
-});
-
-app.get('/matchBasics/:id', async (req, res) => {
-    let matchId = req.params.id;
-    let response = await matchesController.getMatchBasicData(matchId);
-    res.send(response);
-});
-
-app.get('/matchDetails/:id/:pubgName/:userName', async (req, res) => {
-    let matchId = req.params.id;
-    let pubgName = req.params.pubgName;
-    let userName = req.params.userName;
-    let response = await matchesController.getMatchDetails(matchId, pubgName);
-    res.render('matchDetails',{ statistics: response, userName: userName, matchId: matchId });
-});
-
-app.get('/matchDetailsNoRender/:id/:pubgName', async (req, res) => {
-    let matchId = req.params.id;
-    let pubgName = req.params.pubgName;
-    let response = await matchesController.getMatchDetails(matchId, pubgName);
-    res.send(response);
-});
+app.use('/matches', require('./routes/matches'));
