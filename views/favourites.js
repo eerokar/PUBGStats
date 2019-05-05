@@ -83,9 +83,9 @@ if(matchIds === ""){
                     });
 
                     match.addEventListener("click", function () {
-                        request.open('GET', url + '/matches/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName, true);
+                        request.open('GET', url + '/matches/matchDetailsRender/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName, true);
                         request.send();
-                        window.location.href = url + '/matches/matchDetails/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName;
+                        window.location.href = url + '/matches/matchDetailsRender/' + this.getAttribute('matchId') + '/' + pubgName + '/' + userName;
                     });
 
                     //Change button text according to the map's name
