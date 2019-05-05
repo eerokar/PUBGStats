@@ -18,12 +18,14 @@ Like this:
 - Run  `npm run dev`
 
 ## Folder structure:
-The app uses the basic MVC-structure in its folders.
-All routes are defined in the routes-folder and those files use methods that can be found in the controllers-folder.
-Models-folder contains the User-model.<br />
+The app uses the basic MVC-structure.<br />
+The app.js starts the application. The connection to the database and the middleware initialization happens here.
+All the endpoints are defined in files found in the routes-folder and those files use methods that can be found in the controllers-folder.
+Models-folder contains the User data-model.<br />
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/a/a0/MVC-Process.svg)<br />
 The config-folder contains the necessary values such as the MongoDB URI and the api key for accessing the PUBG-backend.
-It also has the passport-functionality.
+It also has the passport-functionality usded dor the login and authorization to use the application.
+Views-folder has all the frontend elements including .js, .ejs and CSS files.
 
 ## API DOCUMENTATION
 
