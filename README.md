@@ -15,7 +15,7 @@ Like this:
 ```
 -Change the db in DB Config in app.js. <br />
 -Change the URLs in js-files in the views-folder. <br />
-- Run * `npm run dev`
+- Run  `npm run dev`
 
 ## Folder structure:
 The app uses the basic MVC-structure in its folders.
