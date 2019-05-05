@@ -2,6 +2,21 @@
 
 WEB-service for inspecting detailed stats of played matches in PUBG. A schoolproject utilizing Node.js.
 
+## How to:
+* `git clone`
+* `npm install`
+-Get PUBG api key from: https://developer.playbattlegrounds.com/
+-Make a file called conf.json to the config-folder an paste your api key there.
+Like this:
+```json
+{
+  "apiKey": "paste-your-api-key-here"
+}
+```
+-Change the db in DB Config in app.js to "MongoURILocal".
+-Change the URLs in js-files in the views-folder.
+- Run * `npm run dev`
+
 
 ## APIDOC
 
