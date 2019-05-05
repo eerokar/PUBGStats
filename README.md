@@ -22,7 +22,7 @@ The app uses the basic MVC-structure in its folders.
 All routes are defined in the routes-folder and those files use methods that can be found in the controllers-folder.
 Models-folder contains the User-model.<br />
 ![alt text](https://upload.wikimedia.org/wikipedia/commons/a/a0/MVC-Process.svg)<br />
-The config folder contains the necessary values such as the MongoDB Uri and api key for accessing the PUBG-backend.
+The config-folder contains the necessary values such as the MongoDB URI and the api key for accessing the PUBG-backend.
 It also has the passport-functionality.
 
 ## API DOCUMENTATION
